@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>行测速算核武版 V5</title>
+    <title>行测速算小助手</title>
     <style>
         :root {
             --bg-color: #e8f5e9; --card-bg: #ffffff; --primary: #2e7d32; --primary-light: #c8e6c9;   
@@ -13,50 +13,66 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center;}
         
-        .app-container { width: 100%; max-width: 500px; background: var(--bg-color); min-height: 100vh; display: flex; flex-direction: column; }
+        .app-container { width: 100%; max-width: 500px; background: var(--bg-color); min-height: 100vh; display: flex; flex-direction: column; position: relative;}
 
         /* 顶部与打卡图 */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; font-size: 18px; font-weight: bold; color: var(--primary); }
-        .heatmap-container { background: var(--card-bg); margin: 0 15px 15px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .heatmap-container { background: var(--card-bg); margin: 0 15px 10px; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .heatmap-title { font-size: 13px; color: var(--text-sub); margin-bottom: 8px; font-weight: bold; display: flex; justify-content: space-between;}
         .heatmap-grid { display: flex; gap: 5px; justify-content: space-between; }
         .heatmap-cell { flex: 1; aspect-ratio: 1; background: #ebedf0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent; transition: 0.3s;}
-        .heatmap-cell.level-1 { background: #c6e48b; }
-        .heatmap-cell.level-2 { background: #7bc96f; }
-        .heatmap-cell.level-3 { background: #239a3b; color: white; font-weight: bold;}
-        .heatmap-cell.level-4 { background: #196127; color: white; font-weight: bold;}
+        .heatmap-cell.level-1 { background: #c6e48b; } .heatmap-cell.level-2 { background: #7bc96f; } .heatmap-cell.level-3 { background: #239a3b; color: white; font-weight: bold;} .heatmap-cell.level-4 { background: #196127; color: white; font-weight: bold;}
 
-        #home-screen { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 15px; flex: 1; }
+        #home-screen { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; }
+        #home-screen::-webkit-scrollbar { display: none; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .module-btn { background: var(--primary-light); color: var(--primary); border: 2px solid transparent; border-radius: 8px; padding: 12px 5px; text-align: center; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;}
+        .section-title { font-weight: bold; font-size: 13px; color: var(--text-sub); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .module-btn { background: var(--primary-light); color: var(--primary); border: 2px solid transparent; border-radius: 8px; padding: 12px 2px; text-align: center; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;}
         .module-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3); transform: translateY(-2px); }
         .module-btn span.sub { font-size: 10px; opacity: 0.8; margin-top: 4px; font-weight: normal; }
-        
         .badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
 
-        .settings-row { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 12px 15px; border-radius: 12px; font-size: 14px; font-weight: bold; margin-top: 5px;}
-        .setting-select { border: none; outline: none; background: #f1f8e9; color: var(--primary); padding: 5px 8px; border-radius: 6px; font-weight: bold; font-size: 14px; }
+        .settings-row { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 12px 15px; border-radius: 12px; font-size: 14px; font-weight: bold; margin-top: 2px;}
+        .setting-select { border: none; outline: none; background: #f1f8e9; color: var(--primary); padding: 5px 8px; border-radius: 6px; font-weight: bold; font-size: 13px; }
         
-        .start-btn { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4); margin-top: 10px; }
+        .start-btn { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4); margin-top: 10px; margin-bottom: 20px;}
         .start-btn:active { transform: scale(0.98); }
+
+        /* 记忆背诵专区 */
+        #memorize-screen { display: none; flex-direction: column; height: 100vh; background: var(--card-bg); }
+        .mem-header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: bold; font-size: 16px; color: var(--primary); }
+        .mem-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; perspective: 1000px; }
+        
+        .flashcard { width: 100%; max-width: 320px; height: 400px; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 20px; }
+        .flashcard.is-flipped { transform: rotateY(180deg); }
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        .card-front { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; }
+        .card-back { background: #fff; border: 4px solid var(--primary); color: var(--text-main); transform: rotateY(180deg); }
+        .card-title { font-size: 28px; font-weight: 900; margin-bottom: 15px; }
+        .card-desc { font-size: 16px; opacity: 0.9; }
+        .card-formula { font-size: 32px; font-weight: 900; color: var(--primary); margin-bottom: 20px; line-height: 1.4; }
+        .card-note { font-size: 14px; color: var(--text-sub); background: #f1f8e9; padding: 10px; border-radius: 8px; }
+        .flip-hint { position: absolute; bottom: 20px; font-size: 12px; opacity: 0.7; }
+        
+        .mem-controls { display: flex; gap: 15px; width: 100%; max-width: 320px; padding: 20px 0 40px; }
+        .mem-btn { flex: 1; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; border: none; cursor: pointer; background: #f0f0f0; color: var(--text-main); }
+        .mem-btn.primary { background: var(--primary); color: white; }
 
         /* 练习界面 */
         #practice-screen { display: none; flex-direction: column; height: 100vh; background: var(--card-bg); }
         .prac-header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: bold; font-size: 16px; }
         .btn-exit { color: var(--text-sub); font-size: 14px; cursor: pointer; }
         
-        .prac-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .prac-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto;}
         .question-type { font-size: 13px; color: var(--success); background: #e8f5e9; padding: 4px 12px; border-radius: 20px; margin-bottom: 15px; font-weight: bold;}
         .question-text { font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center; line-height: 1.3;}
-        .question-hint { font-size: 13px; color: var(--text-sub); margin-bottom: 25px; text-align: center;}
+        .question-hint { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; text-align: center;}
         
-        /* 填空模式 */
         .input-area { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 15px; }
         .answer-input { width: 100%; text-align: center; font-size: 32px; font-weight: bold; padding: 15px; border: 2px solid var(--border); border-radius: 12px; outline: none; color: var(--primary); background: #fafafa; }
         .answer-input:focus { border-color: var(--primary); background: #fff; }
         
-        /* 选择模式 */
         .choice-area { width: 100%; max-width: 320px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; display: none; }
         .choice-btn { background: #fafafa; border: 2px solid var(--border); border-radius: 12px; padding: 20px 10px; font-size: 20px; font-weight: bold; color: var(--text-main); cursor: pointer; transition: 0.1s; }
         .choice-btn:active { transform: scale(0.95); background: #e8f5e9; }
@@ -68,8 +84,7 @@
 
         .feedback-box { margin-top: 15px; width: 100%; max-width: 320px; text-align: center; min-height: 40px;}
         .feedback-msg { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
-        .feedback-msg.correct { color: var(--success); }
-        .feedback-msg.wrong { color: var(--danger); }
+        .feedback-msg.correct { color: var(--success); } .feedback-msg.wrong { color: var(--danger); }
         .time-badge { display: inline-block; padding: 4px 10px; border-radius: 15px; font-size: 13px; font-weight: bold; margin-top: 5px; }
         .tb-s { background: #ffe0b2; color: #e65100; } .tb-a { background: #c8e6c9; color: #1b5e20; } .tb-b { background: #bbdefb; color: #0d47a1; } .tb-c { background: #ffcdd2; color: #b71c1c; }
         .trick-info { font-size: 14px; color: #d84315; background: #fff3e0; padding: 12px; border-radius: 8px; text-align: left; display: none; line-height: 1.5; margin-top: 15px;}
@@ -98,7 +113,7 @@
     
     <div id="home-screen">
         <div class="header">
-            <span>行测速算核武版 V5</span>
+            <span>行测速算核武版 V6</span>
         </div>
 
         <div class="heatmap-container">
@@ -106,41 +121,91 @@
             <div class="heatmap-grid" id="heatmap"></div>
         </div>
 
-        <div style="font-weight: bold; font-size: 13px; color: var(--text-sub);">🎯 考场突击与纠错</div>
+        <div class="section-title">📚 知识背诵专区 (提分基石)</div>
+        <div class="grid-container" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="module-btn" style="background:#e3f2fd; color:#1565c0; border-color:#1565c0;" onclick="startMemorize('formula')">公式大全<span class="sub">资料分析核心</span></div>
+            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a; border-color:#6a1b9a;" onclick="startMemorize('fraction')">分数互化<span class="sub">百分数秒转</span></div>
+        </div>
+
+        <div class="section-title">🎯 考场突击与纠错</div>
         <div class="grid-container">
             <div class="module-btn active" style="background:#fff3e0; color:#e65100; border-color:#e65100;" onclick="selectModule('mixed', this)">全真突击<span class="sub">全题型随机</span></div>
             <div class="module-btn" style="background:#ffeaeb; color:#d32f2f;" onclick="selectModule('errorBook', this)">
                 错题重练<span class="sub">攻克弱点</span>
                 <div class="badge" id="error-badge" style="display:none;">0</div>
             </div>
+            <div class="module-btn" style="background:#e0f2f1; color:#2e7d32;" onclick="selectModule('fractionTest', this)">互化测试<span class="sub">肌肉记忆</span></div>
         </div>
 
-        <div style="font-weight: bold; font-size: 13px; color: var(--text-sub); margin-top: 5px;">📊 资料分析核心</div>
+        <div class="section-title">📊 资料分析模块细分</div>
         <div class="grid-container">
-            <div class="module-btn" onclick="selectModule('fraction', this)">分数互化<span class="sub">必背基础</span></div>
             <div class="module-btn" onclick="selectModule('growth', this)">增长量<span class="sub">N+1 法则</span></div>
-            <div class="module-btn" onclick="selectModule('base', this)">基期估算<span class="sub">化除为乘</span></div>
-            <div class="module-btn" onclick="selectModule('div5', this)">除法截位<span class="sub">五位除三位</span></div>
-            <div class="module-btn" onclick="selectModule('mulEst', this)">乘法估算<span class="sub">一进一舍</span></div>
+            <div class="module-btn" onclick="selectModule('base', this)">基期量<span class="sub">化除为乘</span></div>
+            <div class="module-btn" onclick="selectModule('weight', this)">比重计算<span class="sub">部分÷整体</span></div>
+            <div class="module-btn" onclick="selectModule('average', this)">平均数<span class="sub">总数÷个数</span></div>
+            <div class="module-btn" onclick="selectModule('customDiv', this)">除法截位<span class="sub">自定义</span></div>
+            <div class="module-btn" onclick="selectModule('customMul', this)">乘法估算<span class="sub">自定义</span></div>
         </div>
 
-        <div class="settings-row" style="margin-top: 10px;">
+        <div class="settings-row" id="custom-div-settings" style="display:none; background:#e8f5e9;">
+            <span>除法参数</span>
+            <div>
+                <select class="setting-select" id="div-n1"><option value="4">4位数</option><option value="5" selected>5位数</option><option value="6">6位数</option></select>
+                ÷
+                <select class="setting-select" id="div-n2"><option value="2">2位数</option><option value="3" selected>3位数</option><option value="4">4位数</option></select>
+            </div>
+        </div>
+        <div class="settings-row" id="custom-mul-settings" style="display:none; background:#e8f5e9;">
+            <span>乘法参数</span>
+            <div>
+                <select class="setting-select" id="mul-n1"><option value="2">2位数</option><option value="3" selected>3位数</option><option value="4">4位数</option></select>
+                ×
+                <select class="setting-select" id="mul-n2"><option value="2" selected>2位数</option><option value="3">3位数</option><option value="4">4位数</option></select>
+            </div>
+        </div>
+
+        <div class="settings-row">
             <span>答题模式</span>
             <select class="setting-select" id="input-mode">
-                <option value="choice" selected>单选题 (模拟试卷)</option>
-                <option value="input">填空题 (硬核心算)</option>
+                <option value="choice" selected>单选题 (推荐)</option>
+                <option value="input">填空题 (硬核)</option>
             </select>
         </div>
-        <div class="settings-row" style="margin-top: 5px;">
+        <div class="settings-row">
             <span>题量设置</span>
             <select class="setting-select" id="q-count">
-                <option value="5">5题 (热身)</option>
-                <option value="10" selected>10题 (标准)</option>
-                <option value="20">20题 (真题卷)</option>
+                <option value="5">5题</option>
+                <option value="10" selected>10题</option>
+                <option value="20">20题</option>
             </select>
         </div>
 
         <button class="start-btn" onclick="startPractice()">启动特训</button>
+    </div>
+
+    <div id="memorize-screen">
+        <div class="mem-header">
+            <span onclick="exitMemorize()" style="cursor:pointer; color:var(--text-sub);">返回</span>
+            <span id="mem-title">核心公式背诵</span>
+            <span style="font-size:12px; color:var(--primary);" id="mem-progress">1/10</span>
+        </div>
+        <div class="mem-content">
+            <div class="flashcard" id="flashcard" onclick="flipCard()">
+                <div class="card-face card-front">
+                    <div class="card-title" id="card-front-title">基期量公式</div>
+                    <div class="card-desc" id="card-front-desc">已知现期量和增长率</div>
+                    <div class="flip-hint">点击卡片翻转答案</div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-formula" id="card-back-formula">现期量 ÷ (1+r)</div>
+                    <div class="card-note" id="card-back-note">提示：遇到下降，则是 现期量 ÷ (1-r)</div>
+                </div>
+            </div>
+        </div>
+        <div class="mem-controls">
+            <button class="mem-btn" onclick="prevCard()">上一张</button>
+            <button class="mem-btn primary" onclick="nextCard()">下一张 / 记住了</button>
+        </div>
     </div>
 
     <div id="practice-screen">
@@ -151,9 +216,9 @@
         </div>
         
         <div class="prac-content">
-            <div class="question-type" id="q-type-label">分数互化</div>
-            <div class="question-text" id="q-text">1 / 6 = ?</div>
-            <div class="question-hint" id="q-hint">请输入数值</div>
+            <div class="question-type" id="q-type-label">题型</div>
+            <div class="question-text" id="q-text">Q</div>
+            <div class="question-hint" id="q-hint">Hint</div>
             
             <div class="input-area" id="area-input">
                 <input type="number" id="ans-input" class="answer-input" placeholder="?" inputmode="decimal" autocomplete="off">
@@ -201,12 +266,48 @@
 </div>
 
 <script>
-    // --- 本地数据与状态 ---
-    let activityLog = JSON.parse(localStorage.getItem('v5Activity')) || {};
-    let errorBook = JSON.parse(localStorage.getItem('v5Errors')) || [];
+    // --- 触觉反馈 ---
+    function vibrate(type) {
+        if (!navigator.vibrate) return;
+        if (type === 'success') navigator.vibrate([40]); 
+        if (type === 'error') navigator.vibrate([200]);  
+    }
+
+    // --- 数据与状态 ---
+    let activityLog = JSON.parse(localStorage.getItem('v6Activity')) || {};
+    let errorBook = JSON.parse(localStorage.getItem('v6Errors')) || [];
+
+    const fractions = [
+        { f: '1/2', v: 50.0 }, { f: '1/3', v: 33.3 }, { f: '1/4', v: 25.0 }, { f: '1/5', v: 20.0 },
+        { f: '1/6', v: 16.7 }, { f: '1/7', v: 14.3 }, { f: '1/8', v: 12.5 }, { f: '1/9', v: 11.1 },
+        { f: '1/11', v: 9.1 }, { f: '1/12', v: 8.3 }, { f: '1/13', v: 7.7 }, { f: '1/14', v: 7.1 }, { f: '1/15', v: 6.7 }, { f: '1/16', v: 6.3 },
+        { f: '1/17', v: 5.9 }, { f: '1/18', v: 5.6 }, { f: '1/19', v: 5.3 }, { f: '1/20', v: 5.0 }
+    ];
+
+    const formulas = [
+        { title: "基期量", desc: "已知现期和增长率", formula: "现期 ÷ (1+r)", note: "截位直除，分母保留三位" },
+        { title: "增长量", desc: "已知现期和增长率", formula: "现期 ÷ (n+1)", note: "将 r 化为 1/n，增加用 n+1，减少用 n-1" },
+        { title: "现期比重", desc: "求部分占整体的比例", formula: "部分 ÷ 整体", note: "截位直除" },
+        { title: "基期比重", desc: "求去年的比重", formula: "现期比重 × [(1+整体r) ÷ (1+部分r)]", note: "看 整体r 和 部分r 的大小关系定增减" },
+        { title: "比重差", desc: "现期比重 - 基期比重", formula: "现期比重 × [(部分r - 整体r) ÷ (1+部分r)]", note: "先看 (部分r - 整体r) 的正负定方向，再看数值一定小于绝对差值" },
+        { title: "现期平均数", desc: "求平均", formula: "总数 ÷ 个数", note: "注意单位换算" },
+        { title: "平均数增长率", desc: "求平均数的增速", formula: "(总数r - 个数r) ÷ (1+个数r)", note: "与比重差公式结构类似" }
+    ];
+
+    const moduleNames = { 
+        'fractionTest': '分数互化', 'customDiv': '除法截位', 'customMul': '乘法估算', 
+        'growth': '增长量计算', 'base': '基期估算', 'weight': '比重计算', 'average': '平均数',
+        'mixed': '全真突击', 'errorBook': '错题重练' 
+    };
+    const dataModules = ['fractionTest', 'growth', 'base', 'customDiv', 'customMul', 'weight', 'average']; 
+
+    const TIME_THRESHOLDS = {
+        'fractionTest': [2, 4, 6], 'customDiv': [10, 15, 25], 'customMul': [8, 15, 20], 
+        'growth': [10, 18, 25], 'base': [10, 18, 25], 'weight': [10, 18, 25], 'average': [10, 18, 25]
+    };
 
     let currentModule = 'mixed';
-    let inputMode = 'choice'; // 'choice' or 'input'
+    let inputMode = 'choice'; 
     let totalQuestions = 10;
     let currentQIndex = 1;
     let correctCount = 0;
@@ -215,7 +316,7 @@
     let currentTolerance = 0;
     let currentTrick = "";
     let currentRealModule = ""; 
-    let currentQObj = null; // 用于记录错题信息
+    let currentQObj = null; 
     let choiceOptions = [];
     let correctChoiceIndex = -1;
 
@@ -225,52 +326,27 @@
     let sessionTimes = []; 
     let answeredThisQ = false;
 
-    const moduleNames = { 'div5': '五位除三位', 'mulEst': '乘法估算', 'fraction': '分数互化', 'growth': '增长量计算', 'base': '基期量估算', 'mixed': '全真突击', 'errorBook': '错题重练' };
-    const dataModules = ['fraction', 'growth', 'base', 'div5', 'mulEst']; // 全真模拟的题库
-
-    const TIME_THRESHOLDS = {
-        'fraction': [2, 4, 6], 'div5': [10, 15, 25], 'mulEst': [8, 15, 20], 'growth': [12, 20, 30], 'base': [10, 18, 25]
-    };
-
-    const fractions = [
-        { f: '1/2', v: 50.0 }, { f: '1/3', v: 33.3 }, { f: '1/4', v: 25.0 }, { f: '1/5', v: 20.0 },
-        { f: '1/6', v: 16.7 }, { f: '1/7', v: 14.3 }, { f: '1/8', v: 12.5 }, { f: '1/9', v: 11.1 },
-        { f: '1/11', v: 9.1 }, { f: '1/12', v: 8.3 }, { f: '1/13', v: 7.7 }, { f: '1/14', v: 7.1 }, { f: '1/15', v: 6.7 }, { f: '1/16', v: 6.3 }
-    ];
-
-    // --- 触觉反馈 ---
-    function vibrate(type) {
-        if (!navigator.vibrate) return;
-        if (type === 'success') navigator.vibrate([40]); // 短促有力
-        if (type === 'error') navigator.vibrate([200]);  // 沉闷长震
-    }
-
-    // --- 初始化打卡图 ---
+    // --- 打卡图 ---
     function initHeatmap() {
-        const grid = document.getElementById('heatmap');
-        grid.innerHTML = '';
-        let today = new Date();
-        let totalDone = 0;
+        const grid = document.getElementById('heatmap'); grid.innerHTML = '';
+        let today = new Date(); let totalDone = 0;
         
         for (let i = 6; i >= 0; i--) {
             let d = new Date(today); d.setDate(today.getDate() - i);
             let dateStr = d.toISOString().split('T')[0];
-            let count = activityLog[dateStr] || 0;
-            totalDone += count;
+            let count = activityLog[dateStr] || 0; totalDone += count;
             
-            let cell = document.createElement('div');
-            cell.className = 'heatmap-cell';
+            let cell = document.createElement('div'); cell.className = 'heatmap-cell';
             if (count > 0 && count < 20) cell.classList.add('level-1');
             else if (count >= 20 && count < 50) cell.classList.add('level-2');
             else if (count >= 50 && count < 100) cell.classList.add('level-3');
             else if (count >= 100) cell.classList.add('level-4');
             
-            if(count > 0 && i === 0) cell.innerText = count; // 只在今天显示数字
+            if(count > 0 && i === 0) cell.innerText = count; 
             grid.appendChild(cell);
         }
         document.getElementById('total-done-text').innerText = `总计: ${totalDone}题`;
         
-        // 更新错题角标
         const badge = document.getElementById('error-badge');
         if(errorBook.length > 0) { badge.style.display = 'block'; badge.innerText = errorBook.length; }
         else { badge.style.display = 'none'; }
@@ -280,20 +356,62 @@
     function logActivity() {
         let dateStr = new Date().toISOString().split('T')[0];
         activityLog[dateStr] = (activityLog[dateStr] || 0) + 1;
-        localStorage.setItem('v5Activity', JSON.stringify(activityLog));
+        localStorage.setItem('v6Activity', JSON.stringify(activityLog));
     }
 
-    // --- 页面流程 ---
+    // --- 界面控制 ---
     function selectModule(mod, btnEl) {
         currentModule = mod;
         document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
         btnEl.classList.add('active');
+        
+        document.getElementById('custom-div-settings').style.display = (mod === 'customDiv') ? 'flex' : 'none';
+        document.getElementById('custom-mul-settings').style.display = (mod === 'customMul') ? 'flex' : 'none';
     }
 
-    function startPractice() {
-        if(currentModule === 'errorBook' && errorBook.length === 0) {
-            alert('🎉 错题本为空！你太棒了，去全真突击里找点刺激吧！'); return;
+    // --- 背诵模块 ---
+    let memType = '';
+    let memIndex = 0;
+    let memList = [];
+    
+    function startMemorize(type) {
+        memType = type; memIndex = 0;
+        memList = type === 'formula' ? formulas : fractions;
+        
+        document.getElementById('home-screen').style.display = 'none';
+        document.getElementById('memorize-screen').style.display = 'flex';
+        document.getElementById('mem-title').innerText = type === 'formula' ? "核心公式背诵" : "分数互化背诵";
+        
+        loadCard();
+    }
+    function loadCard() {
+        document.getElementById('mem-progress').innerText = `${memIndex + 1}/${memList.length}`;
+        document.getElementById('flashcard').classList.remove('is-flipped');
+        
+        let item = memList[memIndex];
+        if (memType === 'formula') {
+            document.getElementById('card-front-title').innerText = item.title;
+            document.getElementById('card-front-desc').innerText = item.desc;
+            document.getElementById('card-back-formula').innerText = item.formula;
+            document.getElementById('card-back-note').innerText = item.note;
+        } else {
+            document.getElementById('card-front-title').innerText = item.f;
+            document.getElementById('card-front-desc').innerText = "是多少 %？";
+            document.getElementById('card-back-formula').innerText = item.v + "%";
+            document.getElementById('card-back-note').innerText = `常用于近似计算：比如增长率 ${item.v}% 可以看作 ${item.f}`;
         }
+    }
+    function flipCard() { document.getElementById('flashcard').classList.toggle('is-flipped'); vibrate('success'); }
+    function prevCard() { if(memIndex > 0) { memIndex--; loadCard(); } }
+    function nextCard() { 
+        if(memIndex < memList.length - 1) { memIndex++; loadCard(); } 
+        else { alert("已完成背诵！"); exitMemorize(); }
+    }
+    function exitMemorize() { document.getElementById('memorize-screen').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; }
+
+    // --- 练习启动 ---
+    function startPractice() {
+        if(currentModule === 'errorBook' && errorBook.length === 0) { alert('🎉 错题本为空！去全真突击里找点刺激吧！'); return; }
 
         totalQuestions = parseInt(document.getElementById('q-count').value);
         if(currentModule === 'errorBook') totalQuestions = Math.min(totalQuestions, errorBook.length);
@@ -304,13 +422,8 @@
         document.getElementById('home-screen').style.display = 'none';
         document.getElementById('practice-screen').style.display = 'flex';
         
-        if (inputMode === 'choice') {
-            document.getElementById('area-input').style.display = 'none';
-            document.getElementById('area-choice').style.display = 'grid';
-        } else {
-            document.getElementById('area-input').style.display = 'flex';
-            document.getElementById('area-choice').style.display = 'none';
-        }
+        if (inputMode === 'choice') { document.getElementById('area-input').style.display = 'none'; document.getElementById('area-choice').style.display = 'grid'; } 
+        else { document.getElementById('area-input').style.display = 'flex'; document.getElementById('area-choice').style.display = 'none'; }
 
         startTimer(); loadQuestion();
     }
@@ -328,12 +441,11 @@
         }, 1000);
     }
 
-    // --- 题目引擎 ---
+    // --- 题库引擎 ---
     function loadQuestion() {
         answeredThisQ = false;
         document.getElementById('progress-text').innerText = `${currentQIndex} / ${totalQuestions}`;
         
-        // Reset UI
         document.getElementById('fb-msg').innerText = '';
         document.getElementById('time-badge').style.display = 'none';
         document.getElementById('trick-box').style.display = 'none';
@@ -350,62 +462,65 @@
             }
         }
 
-        // Module routing
         if (currentModule === 'errorBook') {
-            // 取错题本第一题
             let eq = errorBook[0];
             currentRealModule = eq.mod;
             document.getElementById('q-text').innerHTML = eq.qHtml;
-            document.getElementById('q-hint').innerText = "错题重练 - 请仔细作答";
+            document.getElementById('q-hint').innerText = "错题重练 - 仔细作答";
             currentAnswer = eq.ans; currentTolerance = eq.tol; currentTrick = eq.trick;
             currentQObj = eq;
         } else {
             currentRealModule = currentModule === 'mixed' ? dataModules[Math.floor(Math.random() * dataModules.length)] : currentModule;
-            if (currentRealModule === 'fraction') genFraction();
-            else if (currentRealModule === 'div5') genDiv5();
-            else if (currentRealModule === 'mulEst') genMulEst();
+            
+            if (currentRealModule === 'fractionTest') genFractionTest();
+            else if (currentRealModule === 'customDiv') genCustomDiv();
+            else if (currentRealModule === 'customMul') genCustomMul();
             else if (currentRealModule === 'growth') genGrowth();
             else if (currentRealModule === 'base') genBase();
+            else if (currentRealModule === 'weight') genWeight();
+            else if (currentRealModule === 'average') genAverage();
             
-            // 构造当前题目的对象，用于存错题本
-            currentQObj = {
-                mod: currentRealModule,
-                qHtml: document.getElementById('q-text').innerHTML,
-                ans: currentAnswer,
-                tol: currentTolerance,
-                trick: currentTrick
-            };
+            currentQObj = { mod: currentRealModule, qHtml: document.getElementById('q-text').innerHTML, ans: currentAnswer, tol: currentTolerance, trick: currentTrick };
         }
 
         document.getElementById('q-type-label').innerText = moduleNames[currentRealModule];
-
         if (inputMode === 'choice') generateChoiceOptions();
-
         questionStartTime = Date.now();
     }
 
-    function genDiv5() {
-        let a = Math.floor(Math.random() * 90000) + 10000; let b = Math.floor(Math.random() * 900) + 100;
-        currentAnswer = a / b; currentTolerance = currentAnswer * 0.015; 
-        document.getElementById('q-text').innerHTML = `${a} ÷ ${b} = ?`;
-        document.getElementById('q-hint').innerText = "截位直除";
-        currentTrick = `分母保留前两位，把 ${b} 看作 ${Math.round(b/10)*10}，算 ${a} ÷ ${Math.round(b/10)*10}。`;
-    }
-
-    function genMulEst() {
-        let a = Math.floor(Math.random() * 900) + 100; let b = Math.floor(Math.random() * 90) + 10;
-        currentAnswer = a * b; currentTolerance = currentAnswer * 0.03; 
-        document.getElementById('q-text').innerHTML = `${a} × ${b} = ?`;
-        document.getElementById('q-hint').innerText = "乘法估算";
-        currentTrick = `一进一舍保持平衡。看选项差距决定截位精度。`;
-    }
-
-    function genFraction() {
+    function genFractionTest() {
         let item = fractions[Math.floor(Math.random() * fractions.length)];
         document.getElementById('q-text').innerHTML = `${item.f} = ? %`;
         document.getElementById('q-hint').innerText = "必须肌肉记忆的百分数";
         currentAnswer = item.v; currentTolerance = 0.2;
-        currentTrick = `死记硬背！${item.f} ≈ ${item.v}%。`;
+        currentTrick = `纯记忆：${item.f} ≈ ${item.v}%。`;
+    }
+
+    function genCustomDiv() {
+        let n1 = parseInt(document.getElementById('div-n1').value);
+        let n2 = parseInt(document.getElementById('div-n2').value);
+        let max1 = Math.pow(10, n1) - 1; let min1 = Math.pow(10, n1-1);
+        let max2 = Math.pow(10, n2) - 1; let min2 = Math.pow(10, n2-1);
+        let a = Math.floor(Math.random() * (max1 - min1 + 1)) + min1;
+        let b = Math.floor(Math.random() * (max2 - min2 + 1)) + min2;
+        
+        currentAnswer = a / b; currentTolerance = currentAnswer * 0.015; 
+        document.getElementById('q-text').innerHTML = `${a} ÷ ${b} = ?`;
+        document.getElementById('q-hint').innerText = `截位直除 (${n1}位÷${n2}位)`;
+        let roundB = Math.round(b / Math.pow(10, n2-3)) * Math.pow(10, n2-3); // 截取前三位
+        currentTrick = `分母保留前三位有效数字，把 ${b} 看作 ${roundB} 进行估算。`;
+    }
+
+    function genCustomMul() {
+        let n1 = parseInt(document.getElementById('mul-n1').value);
+        let n2 = parseInt(document.getElementById('mul-n2').value);
+        let a = Math.floor(Math.random() * (Math.pow(10, n1) - Math.pow(10, n1-1))) + Math.pow(10, n1-1);
+        let b = Math.floor(Math.random() * (Math.pow(10, n2) - Math.pow(10, n2-1))) + Math.pow(10, n2-1);
+        
+        currentAnswer = a * b; currentTolerance = currentAnswer * 0.03; 
+        document.getElementById('q-text').innerHTML = `${a} × ${b} = ?`;
+        document.getElementById('q-hint').innerText = `乘法估算 (${n1}位×${n2}位)`;
+        currentTrick = `一进一舍保持平衡，看选项差距截位。`;
     }
 
     function genGrowth() {
@@ -413,62 +528,86 @@
         let val = Math.floor(Math.random() * 5000) + 3000; let isInc = Math.random() > 0.3; 
         let rate = (item.v + (Math.random()*0.4 - 0.2)).toFixed(1); 
         document.getElementById('q-text').innerHTML = `现期: ${val}<br><span style="font-size:20px;">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`;
-        document.getElementById('q-hint').innerText = `求${isInc?'增长量':'减少量'}？`;
+        document.getElementById('q-hint').innerText = `求${isInc?'增长量':'减少量'}`;
         let n = Math.round(100 / item.v);
-        if (isInc) { currentAnswer = val / (n + 1); currentTrick = `看作 1/${n}，增加用 n+1。\n${val} ÷ ${n+1} ≈ ${(val/(n+1)).toFixed(1)}`; } 
-        else { currentAnswer = val / (n - 1); currentTrick = `看作 1/${n}，减少用 n-1。\n${val} ÷ ${n-1} ≈ ${(val/(n-1)).toFixed(1)}`; }
+        if (isInc) { currentAnswer = val / (n + 1); currentTrick = `化为 1/${n}，增加用 n+1。\n${val} ÷ ${n+1} ≈ ${(val/(n+1)).toFixed(1)}`; } 
+        else { currentAnswer = val / (n - 1); currentTrick = `化为 1/${n}，减少用 n-1。\n${val} ÷ ${n-1} ≈ ${(val/(n-1)).toFixed(1)}`; }
         currentTolerance = currentAnswer * 0.03; 
     }
 
     function genBase() {
         let val = Math.floor(Math.random() * 7000) + 2000; let rate = Math.floor(Math.random() * 25) + 5; let isInc = Math.random() > 0.5;
         document.getElementById('q-text').innerHTML = `现期: ${val}<br><span style="font-size:20px;">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`;
-        document.getElementById('q-hint').innerText = `求基期量？`;
+        document.getElementById('q-hint').innerText = `求基期量`;
         let r = isInc ? (1 + rate/100) : (1 - rate/100);
         currentAnswer = val / r; currentTolerance = currentAnswer * 0.02;
-        currentTrick = `公式：现期 / (1±r)。结合截位估算 ${val} ÷ ${r.toFixed(2)}。`;
+        currentTrick = `基期 = 现期 / (1±r)。即算 ${val} ÷ ${r.toFixed(2)}`;
     }
 
-    // --- 单选题生成引擎 ---
+    function genWeight() {
+        let whole = Math.floor(Math.random() * 50000) + 10000;
+        let part = Math.floor(Math.random() * (whole - 2000)) + 1000;
+        document.getElementById('q-text').innerHTML = `部分量: ${part}<br><span style="font-size:20px;">整体量: ${whole}</span>`;
+        document.getElementById('q-hint').innerText = `求现期比重`;
+        currentAnswer = (part / whole) * 100; currentTolerance = currentAnswer * 0.02;
+        currentTrick = `比重 = 部分 / 整体。算 ${part} ÷ ${whole}。分母截取前三位直除。`;
+    }
+
+    function genAverage() {
+        let total = Math.floor(Math.random() * 50000) + 10000;
+        let count = Math.floor(Math.random() * 90) + 10;
+        document.getElementById('q-text').innerHTML = `总数: ${total}<br><span style="font-size:20px;">个数: ${count}</span>`;
+        document.getElementById('q-hint').innerText = `求现期平均数`;
+        currentAnswer = total / count; currentTolerance = currentAnswer * 0.02;
+        currentTrick = `平均数 = 总数 / 个数。直接算 ${total} ÷ ${count}。`;
+    }
+
+    // --- 去重干扰项生成器 ---
     function generateChoiceOptions() {
+        let setOptions = new Set();
+        let correctStr = formatVal(currentAnswer);
+        setOptions.add(correctStr);
         choiceOptions = [currentAnswer];
         
-        // 动态生成3个干扰项
-        let factors = [];
-        if (currentRealModule === 'fraction') {
-            // 分数互化，直接从池子里抓其他的
-            let others = fractions.map(f => f.v).filter(v => Math.abs(v - currentAnswer) > 0.5);
-            others.sort(() => 0.5 - Math.random());
-            choiceOptions.push(others[0], others[1], others[2]);
-        } else {
-            // 计算题，根据难度随机差距 (5% 到 15%)
-            let diff1 = 1 + (Math.random() * 0.1 + 0.05);
-            let diff2 = 1 - (Math.random() * 0.1 + 0.05);
-            let diff3 = Math.random() > 0.5 ? 1 + (Math.random() * 0.05 + 0.15) : 1 - (Math.random() * 0.05 + 0.15);
-            choiceOptions.push(currentAnswer * diff1, currentAnswer * diff2, currentAnswer * diff3);
+        let maxAttempts = 20;
+        while(choiceOptions.length < 4 && maxAttempts > 0) {
+            maxAttempts--;
+            let newVal;
+            if (currentRealModule === 'fractionTest') {
+                let others = fractions.map(f => f.v).filter(v => Math.abs(v - currentAnswer) > 0.5);
+                newVal = others[Math.floor(Math.random() * others.length)];
+            } else {
+                let diff = 1 + (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.15 + 0.05); // 偏离 5% 到 20%
+                newVal = currentAnswer * diff;
+            }
+            
+            let valStr = formatVal(newVal);
+            if(!setOptions.has(valStr)) {
+                setOptions.add(valStr);
+                choiceOptions.push(newVal);
+            }
         }
-
-        // 打乱选项
+        
         choiceOptions.sort(() => 0.5 - Math.random());
         correctChoiceIndex = choiceOptions.findIndex(v => v === currentAnswer);
 
-        // 渲染按钮
         for(let i=0; i<4; i++) {
             let btn = document.getElementById('c-btn-'+i);
-            // 格式化输出
-            let val = choiceOptions[i];
-            if(currentRealModule === 'fraction') btn.innerText = val.toFixed(1) + '%';
-            else if(val > 100) btn.innerText = Math.round(val);
-            else btn.innerText = val.toFixed(1);
+            btn.innerText = formatVal(choiceOptions[i]) + (currentRealModule === 'fractionTest' ? '%' : '');
         }
     }
 
-    // --- 提交与验证 ---
+    function formatVal(val) {
+        if(currentRealModule === 'fractionTest') return val.toFixed(1);
+        if(val > 100) return Math.round(val).toString();
+        return val.toFixed(1);
+    }
+
+    // --- 验证与结果 ---
     function checkAnswerInput() {
         let userVal = parseFloat(document.getElementById('ans-input').value);
         if (isNaN(userVal)) { alert("请输入数字！"); return; }
-        document.getElementById('ans-input').disabled = true;
-        document.getElementById('btn-submit').style.display = 'none';
+        document.getElementById('ans-input').disabled = true; document.getElementById('btn-submit').style.display = 'none';
         
         let isCorrect = Math.abs(userVal - currentAnswer) <= currentTolerance;
         processResult(isCorrect);
@@ -476,68 +615,46 @@
 
     function checkAnswerChoice(selectedIndex) {
         if(answeredThisQ) return;
-        
-        // 禁用所有按钮
         for(let i=0; i<4; i++) { document.getElementById('c-btn-'+i).disabled = true; }
         
         let isCorrect = (selectedIndex === correctChoiceIndex);
-        
-        if (isCorrect) {
-            document.getElementById('c-btn-'+selectedIndex).classList.add('correct-ans');
-        } else {
+        if (isCorrect) { document.getElementById('c-btn-'+selectedIndex).classList.add('correct-ans'); } 
+        else {
             document.getElementById('c-btn-'+selectedIndex).classList.add('wrong-ans');
-            document.getElementById('c-btn-'+correctChoiceIndex).classList.add('correct-ans'); // 标出正确答案
+            document.getElementById('c-btn-'+correctChoiceIndex).classList.add('correct-ans'); 
         }
-        
         processResult(isCorrect);
     }
 
     function processResult(isCorrect) {
-        answeredThisQ = true;
-        logActivity(); // 打卡记录
+        answeredThisQ = true; logActivity(); 
         
         let timeSpent = (Date.now() - questionStartTime) / 1000;
         sessionTimes.push(timeSpent);
         let speedEval = getSpeedEval(timeSpent, currentRealModule);
 
-        const msgEl = document.getElementById('fb-msg');
-        const badgeEl = document.getElementById('time-badge');
-        
-        badgeEl.style.display = 'inline-block';
-        badgeEl.className = 'time-badge ' + speedEval.class;
-        badgeEl.innerText = `⏱️ 用时 ${timeSpent.toFixed(1)}s [${speedEval.text}]`;
+        const msgEl = document.getElementById('fb-msg'); const badgeEl = document.getElementById('time-badge');
+        badgeEl.style.display = 'inline-block'; badgeEl.className = 'time-badge ' + speedEval.class; badgeEl.innerText = `⏱️ 用时 ${timeSpent.toFixed(1)}s [${speedEval.text}]`;
 
-        // 错题本逻辑：答错，或者答对但超时(C)，都记入错题本
         if (!isCorrect || speedEval.grade === 'C') {
-            if(currentModule !== 'errorBook') {
-                errorBook.push(currentQObj);
-                localStorage.setItem('v5Errors', JSON.stringify(errorBook));
-            } else if (!isCorrect) {
-                // 如果在错题本里做错了，挪到最后面继续拷打
-                errorBook.push(errorBook.shift());
-                localStorage.setItem('v5Errors', JSON.stringify(errorBook));
-            }
+            if(currentModule !== 'errorBook') { errorBook.push(currentQObj); localStorage.setItem('v6Errors', JSON.stringify(errorBook)); } 
+            else if (!isCorrect) { errorBook.push(errorBook.shift()); localStorage.setItem('v6Errors', JSON.stringify(errorBook)); }
         } else if (isCorrect && currentModule === 'errorBook') {
-            // 在错题本里做对了，且没超时，移出错题本
-            errorBook.shift();
-            localStorage.setItem('v5Errors', JSON.stringify(errorBook));
+            errorBook.shift(); localStorage.setItem('v6Errors', JSON.stringify(errorBook));
         }
 
         if (isCorrect) {
-            correctCount++;
-            vibrate('success');
-            msgEl.innerText = inputMode === 'choice' ? "✅ 选择正确！" : `✅ 正确！(标准值约 ${currentAnswer.toFixed(1)})`;
+            correctCount++; vibrate('success');
+            msgEl.innerText = inputMode === 'choice' ? "✅ 选择正确！" : `✅ 正确！(真值约 ${currentAnswer.toFixed(1)})`;
             msgEl.className = "feedback-msg correct";
-            // 0.8秒后自动下一题
             setTimeout(nextQuestion, 800);
         } else {
             vibrate('error');
-            msgEl.innerText = `❌ 错误。(标准值约 ${currentAnswer.toFixed(1)})`;
+            msgEl.innerText = `❌ 错误。(真值约 ${currentAnswer.toFixed(1)})`;
             msgEl.className = "feedback-msg wrong";
             document.getElementById('trick-box').innerHTML = `<strong>💡 导师解析：</strong><br>${currentTrick}`;
             document.getElementById('trick-box').style.display = 'block';
-            document.getElementById('btn-next').style.display = 'block';
-            document.getElementById('btn-next').focus();
+            document.getElementById('btn-next').style.display = 'block'; document.getElementById('btn-next').focus();
         }
     }
 
@@ -550,8 +667,12 @@
     }
 
     function nextQuestion() {
-        if (currentQIndex >= totalQuestions) finishPractice();
-        else { currentQIndex++; loadQuestion(); }
+        if (currentQIndex >= totalQuestions) finishPractice(); else { currentQIndex++; loadQuestion(); }
+    }
+
+    function getLetterStyle(letter) {
+        if(letter === 'S') return "grade-circle grade-s"; if(letter === 'A') return "grade-circle grade-a";
+        if(letter === 'B') return "grade-circle grade-b"; if(letter === 'C') return "grade-circle grade-c"; return "grade-circle grade-d";
     }
 
     function finishPractice() {
@@ -570,18 +691,17 @@
         let th = TIME_THRESHOLDS[currentRealModule] || [10,15,20];
         let spdGrade = avgTime <= th[0] ? 'S' : avgTime <= th[1] ? 'A' : avgTime <= th[2] ? 'B' : 'C';
 
-        document.getElementById('r-score').innerText = Math.round(accRate);
-        document.getElementById('r-avg-time').innerText = avgTime.toFixed(1);
+        document.getElementById('r-score').innerText = Math.round(accRate); document.getElementById('r-avg-time').innerText = avgTime.toFixed(1);
 
-        const elAcc = document.getElementById('acc-grade'); elAcc.innerText = accGrade; elAcc.className = "grade-circle grade-" + accGrade.toLowerCase();
-        const elSpd = document.getElementById('spd-grade'); elSpd.innerText = spdGrade; elSpd.className = "grade-circle grade-" + spdGrade.toLowerCase();
+        const elAcc = document.getElementById('acc-grade'); elAcc.innerText = accGrade; elAcc.className = getLetterStyle(accGrade);
+        const elSpd = document.getElementById('spd-grade'); elSpd.innerText = spdGrade; elSpd.className = getLetterStyle(spdGrade);
 
         let comment = "";
         if(errorBook.length > 0) document.getElementById('r-error-notice').innerText = `⚠️ 已将本次拉胯题目收录至【错题本】，请记得复训！`;
         else document.getElementById('r-error-notice').innerText = '';
 
         if (accGrade === 'S' && spdGrade === 'S') comment = "🏆 考神附体！准确率和速度双双拉满，满分表现！";
-        else if (accRate < 60) comment = "📉 准确率堪忧。不要盲目追求速度，先看解析把公式理清楚。";
+        else if (accRate < 60) comment = "📉 准确率堪忧。不要盲目追求速度，先去【知识背诵区】巩固公式。";
         else if ((accGrade === 'S' || accGrade === 'A') && (spdGrade === 'C' || spdGrade === 'D')) comment = "🐢 算得很准，但耗时太长。考场上时间就是命，大胆用截位估算！";
         else comment = "⚖️ 成绩中规中矩。记得多去首页刷一下【错题本】，攻克你的弱点。";
         

@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>行测速算小助手</title>
+    <title>行测速算小助手 V4</title>
     <style>
         :root {
-            --bg-color: #e8f5e9;        /* 浅薄荷绿背景 */
+            --bg-color: #e8f5e9;        
             --card-bg: #ffffff;
-            --primary: #2e7d32;         /* 深绿主色 */
-            --primary-light: #c8e6c9;   /* 浅绿按钮底色 */
+            --primary: #2e7d32;         
+            --primary-light: #c8e6c9;   
             --text-main: #1b5e20;
             --text-sub: #666666;
             --success: #4caf50;
             --danger: #f44336;
+            --warning: #ff9800;
             --border: #a5d6a7;
         }
 
@@ -32,19 +33,15 @@
             display: flex; flex-direction: column;
         }
 
-        /* --- 顶部导航栏 --- */
         .header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 20px; background: var(--bg-color);
             font-size: 18px; font-weight: bold; color: var(--primary);
         }
 
-        /* --- 首页：网格模块选择 --- */
         #home-screen { padding: 10px 15px; display: flex; flex-direction: column; gap: 20px; flex: 1; }
         
-        .grid-container {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .module-btn {
             background: var(--primary-light); color: var(--primary);
             border: 2px solid transparent; border-radius: 8px;
@@ -58,7 +55,6 @@
         }
         .module-btn span.sub { font-size: 10px; opacity: 0.8; margin-top: 4px; font-weight: normal; }
 
-        /* --- 设置与开始按钮 --- */
         .settings-row {
             display: flex; justify-content: space-between; align-items: center;
             background: var(--card-bg); padding: 15px 20px; border-radius: 12px;
@@ -76,13 +72,9 @@
         }
         .start-btn:active { transform: scale(0.98); }
 
-        /* --- 练习界面 --- */
+        /* 练习界面 */
         #practice-screen { display: none; flex-direction: column; height: 100vh; background: var(--card-bg); }
-        
-        .prac-header {
-            display: flex; justify-content: space-between; padding: 15px 20px;
-            border-bottom: 1px solid #eee; font-weight: bold; font-size: 16px;
-        }
+        .prac-header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: bold; font-size: 16px; }
         .btn-exit { color: var(--text-sub); font-size: 14px; cursor: pointer; }
         
         .prac-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
@@ -97,28 +89,47 @@
         }
         .answer-input:focus { border-color: var(--primary); background: #fff; }
         
-        .submit-btn {
-            width: 100%; background: var(--primary); color: white; border: none; border-radius: 12px;
-            padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer;
-        }
-        .next-btn {
-            width: 100%; background: #f0f0f0; color: var(--text-main); border: 1px solid #ccc; border-radius: 12px;
-            padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer; display: none;
-        }
+        .submit-btn { width: 100%; background: var(--primary); color: white; border: none; border-radius: 12px; padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .next-btn { width: 100%; background: #f0f0f0; color: var(--text-main); border: 1px solid #ccc; border-radius: 12px; padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer; display: none; }
 
         .feedback-box { margin-top: 20px; width: 100%; max-width: 300px; text-align: center; }
-        .feedback-msg { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .feedback-msg { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .feedback-msg.correct { color: var(--success); }
         .feedback-msg.wrong { color: var(--danger); }
-        .trick-info { font-size: 14px; color: #d84315; background: #fff3e0; padding: 12px; border-radius: 8px; text-align: left; display: none; line-height: 1.5;}
+        
+        /* 耗时评估标签 */
+        .time-badge { display: inline-block; padding: 4px 10px; border-radius: 15px; font-size: 13px; font-weight: bold; margin-top: 5px; }
+        .tb-s { background: #ffe0b2; color: #e65100; } /* 极佳 */
+        .tb-a { background: #c8e6c9; color: #1b5e20; } /* 优秀 */
+        .tb-b { background: #bbdefb; color: #0d47a1; } /* 合格 */
+        .tb-c { background: #ffcdd2; color: #b71c1c; } /* 超时 */
 
-        /* --- 结算界面 --- */
+        .trick-info { font-size: 14px; color: #d84315; background: #fff3e0; padding: 12px; border-radius: 8px; text-align: left; display: none; line-height: 1.5; margin-top: 15px;}
+
+        /* 结算界面 */
         #result-screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px; background: var(--bg-color); }
-        .result-card { background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; text-align: center; }
-        .r-title { font-size: 24px; font-weight: bold; margin-bottom: 30px; color: var(--primary); }
-        .r-stat { font-size: 40px; font-weight: 900; color: var(--text-main); margin-bottom: 5px; }
-        .r-label { font-size: 14px; color: var(--text-sub); margin-bottom: 20px; }
-        .r-btn { margin-top: 20px; width: 100%; background: var(--primary); color: white; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; }
+        .result-card { background: white; padding: 30px 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 360px; text-align: center; }
+        .r-title { font-size: 24px; font-weight: bold; margin-bottom: 5px; color: var(--primary); }
+        .r-subtitle { font-size: 13px; color: var(--text-sub); margin-bottom: 25px; }
+        
+        .grade-row { display: flex; justify-content: space-around; margin-bottom: 25px; }
+        .grade-item { display: flex; flex-direction: column; align-items: center; }
+        .grade-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin-bottom: 5px; }
+        .grade-s { background: #ffe0b2; color: #e65100; }
+        .grade-a { background: #c8e6c9; color: #2e7d32; }
+        .grade-b { background: #e3f2fd; color: #1976d2; }
+        .grade-c { background: #f5f5f5; color: #616161; }
+        .grade-d { background: #ffcdd2; color: #c62828; }
+        .grade-label { font-size: 13px; font-weight: bold; color: var(--text-sub); }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 20px 0;}
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-val { font-size: 22px; font-weight: 900; color: var(--text-main); }
+        .stat-name { font-size: 12px; color: var(--text-sub); }
+
+        .commentary-box { background: #f9fbe7; padding: 15px; border-radius: 10px; font-size: 14px; color: #33691e; text-align: left; line-height: 1.5; font-weight: 500;}
+
+        .r-btn { margin-top: 25px; width: 100%; background: var(--primary); color: white; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; }
 
     </style>
 </head>
@@ -129,18 +140,18 @@
     <div id="home-screen">
         <div class="header">
             <span><</span>
-            <span>行测速算小助手</span>
+            <span>行测速算小助手 V4</span>
             <span style="font-size:14px; color:var(--primary);">...</span>
         </div>
 
-        <div style="font-weight: bold; font-size: 14px; color: var(--text-sub); margin-top: 5px;">🔥 基础计算训练</div>
+        <div style="font-weight: bold; font-size: 14px; color: var(--text-sub); margin-top: 5px;">🔥 基础计算 (严苛模式)</div>
         <div class="grid-container">
             <div class="module-btn" onclick="selectModule('add2', this)">两位数加减<span class="sub">精确计算</span></div>
             <div class="module-btn" onclick="selectModule('add3', this)">三位数加减<span class="sub">精确计算</span></div>
             <div class="module-btn" onclick="selectModule('mul2', this)">两位数乘法<span class="sub">精确计算</span></div>
         </div>
 
-        <div style="font-weight: bold; font-size: 14px; color: var(--text-sub); margin-top: 10px;">📊 资料分析速算</div>
+        <div style="font-weight: bold; font-size: 14px; color: var(--text-sub); margin-top: 10px;">📊 资料分析 (考场模式)</div>
         <div class="grid-container">
             <div class="module-btn" onclick="selectModule('div5', this)">五位除三位<span class="sub">截位直除</span></div>
             <div class="module-btn" onclick="selectModule('mulEst', this)">乘法估算<span class="sub">一进一舍</span></div>
@@ -158,7 +169,7 @@
             </select>
         </div>
 
-        <button class="start-btn" onclick="startPractice()">开始练习</button>
+        <button class="start-btn" onclick="startPractice()">开始测评</button>
     </div>
 
     <div id="practice-screen">
@@ -181,6 +192,7 @@
 
             <div class="feedback-box">
                 <div class="feedback-msg" id="fb-msg"></div>
+                <div id="time-badge" class="time-badge" style="display:none;"></div>
                 <div class="trick-info" id="trick-box"></div>
             </div>
         </div>
@@ -188,23 +200,33 @@
 
     <div id="result-screen">
         <div class="result-card">
-            <div class="r-title">练习完成！</div>
-            <div class="r-stat" id="r-score">80%</div>
-            <div class="r-label">准确率</div>
+            <div class="r-title">测评报告</div>
+            <div class="r-subtitle" id="r-module-name">模块：分数互化 (10题)</div>
             
-            <div style="display:flex; justify-content:space-around; margin: 30px 0; border-top: 1px solid #eee; padding-top: 20px;">
-                <div>
-                    <div style="font-weight:bold; font-size:20px; color:var(--success);" id="r-correct">8</div>
-                    <div style="font-size:12px; color:var(--text-sub);">正确</div>
+            <div class="grade-row">
+                <div class="grade-item">
+                    <div class="grade-circle" id="acc-grade">A</div>
+                    <div class="grade-label">准确度评级</div>
                 </div>
-                <div>
-                    <div style="font-weight:bold; font-size:20px; color:var(--danger);" id="r-wrong">2</div>
-                    <div style="font-size:12px; color:var(--text-sub);">错误</div>
+                <div class="grade-item">
+                    <div class="grade-circle" id="spd-grade">B</div>
+                    <div class="grade-label">速度评级</div>
                 </div>
-                <div>
-                    <div style="font-weight:bold; font-size:20px; color:var(--primary);" id="r-time">01:20</div>
-                    <div style="font-size:12px; color:var(--text-sub);">用时</div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-val"><span id="r-score" style="color:var(--success);">80</span>%</div>
+                    <div class="stat-name">正确率 (<span id="r-correct">8</span>/<span id="r-total">10</span>)</div>
                 </div>
+                <div class="stat-box">
+                    <div class="stat-val"><span id="r-avg-time" style="color:var(--primary);">3.5</span>s</div>
+                    <div class="stat-name">平均单题耗时</div>
+                </div>
+            </div>
+
+            <div class="commentary-box" id="r-commentary">
+                导师评价：你的准确率很高，但反应速度还需要加强。资料分析考场上时间就是分数，建议继续强化肌肉记忆！
             </div>
 
             <button class="r-btn" onclick="backToHome()">返回首页</button>
@@ -219,20 +241,33 @@
     let totalQuestions = 10;
     let currentQIndex = 1;
     let correctCount = 0;
-    let wrongCount = 0;
     
     let currentAnswer = 0;
     let currentTolerance = 0;
     let currentTrick = "";
 
+    // 计时与测速
     let timerInterval;
-    let secondsElapsed = 0;
+    let totalSecondsElapsed = 0;
+    let questionStartTime = 0;
+    let sessionTimes = []; // 记录每道题的耗时
 
-    // --- 数据 ---
+    // --- 各模块时间评估标准 (秒) [极佳S, 优秀A, 合格B, 超时C] ---
+    const TIME_THRESHOLDS = {
+        'fraction': [2, 4, 6],      // 肌肉记忆，要求极快
+        'add2': [4, 8, 12],         // 基础加减
+        'add3': [6, 10, 15],
+        'mul2': [8, 15, 25],
+        'div5': [10, 15, 25],       // 截位直除
+        'mulEst': [8, 15, 20],      // 估算
+        'growth': [12, 20, 30],     // 复杂列式
+        'base': [10, 18, 25]        // 基期估算
+    };
+
     const fractions = [
         { f: '1/2', v: 50.0 }, { f: '1/3', v: 33.3 }, { f: '1/4', v: 25.0 }, { f: '1/5', v: 20.0 },
         { f: '1/6', v: 16.7 }, { f: '1/7', v: 14.3 }, { f: '1/8', v: 12.5 }, { f: '1/9', v: 11.1 },
-        { f: '1/11', v: 9.1 }, { f: '1/12', v: 8.3 }, { f: '1/13', v: 7.7 }, { f: '1/14', v: 7.1 }, { f: '1/15', v: 6.7 }
+        { f: '1/11', v: 9.1 }, { f: '1/12', v: 8.3 }, { f: '1/13', v: 7.7 }, { f: '1/14', v: 7.1 }, { f: '1/15', v: 6.7 }, { f: '1/16', v: 6.3 }
     ];
 
     const moduleNames = {
@@ -241,7 +276,6 @@
         'growth': '增长量计算', 'base': '基期量估算'
     };
 
-    // --- UI 切换逻辑 ---
     function selectModule(mod, btnEl) {
         currentModule = mod;
         document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
@@ -252,8 +286,8 @@
         totalQuestions = parseInt(document.getElementById('q-count').value);
         currentQIndex = 1;
         correctCount = 0;
-        wrongCount = 0;
-        secondsElapsed = 0;
+        totalSecondsElapsed = 0;
+        sessionTimes = [];
 
         document.getElementById('home-screen').style.display = 'none';
         document.getElementById('practice-screen').style.display = 'flex';
@@ -277,14 +311,14 @@
     function startTimer() {
         document.getElementById('timer-text').innerText = "00:00";
         timerInterval = setInterval(() => {
-            secondsElapsed++;
-            let m = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-            let s = String(secondsElapsed % 60).padStart(2, '0');
+            totalSecondsElapsed++;
+            let m = String(Math.floor(totalSecondsElapsed / 60)).padStart(2, '0');
+            let s = String(totalSecondsElapsed % 60).padStart(2, '0');
             document.getElementById('timer-text').innerText = `${m}:${s}`;
         }, 1000);
     }
 
-    // --- 题库引擎 ---
+    // --- 题库生成 ---
     function loadQuestion() {
         document.getElementById('progress-text').innerText = `${currentQIndex} / ${totalQuestions}`;
         document.getElementById('ans-input').value = '';
@@ -292,6 +326,7 @@
         document.getElementById('ans-input').focus();
         
         document.getElementById('fb-msg').innerText = '';
+        document.getElementById('time-badge').style.display = 'none';
         document.getElementById('trick-box').style.display = 'none';
         document.getElementById('btn-submit').style.display = 'block';
         document.getElementById('btn-next').style.display = 'none';
@@ -304,69 +339,61 @@
         else if (currentModule === 'mulEst') genMulEst();
         else if (currentModule === 'growth') genGrowth();
         else if (currentModule === 'base') genBase();
+
+        // 记录本题开始时间 (精确到毫秒)
+        questionStartTime = Date.now();
     }
 
-    // 1. 基础计算 (绝对精确)
     function genBasicMath(digits, type) {
-        let max = Math.pow(10, digits) - 1;
-        let min = Math.pow(10, digits - 1);
+        let max = Math.pow(10, digits) - 1; let min = Math.pow(10, digits - 1);
         let a = Math.floor(Math.random() * (max - min + 1)) + min;
         let b = Math.floor(Math.random() * (max - min + 1)) + min;
 
         if (type === '+-') {
             let isAdd = Math.random() > 0.5;
-            if (!isAdd && a < b) { let temp = a; a = b; b = temp; } // 保证结果为正
+            if (!isAdd && a < b) { let temp = a; a = b; b = temp; }
             currentAnswer = isAdd ? a + b : a - b;
             document.getElementById('q-text').innerText = `${a} ${isAdd ? '+' : '-'} ${b} = ?`;
-            document.getElementById('q-hint').innerText = "必须完全精确计算";
-            currentTrick = "基础运算，请提高心算速度。";
+            document.getElementById('q-hint').innerText = "完全精确计算";
+            currentTrick = "基础口算，没有捷径，请强化基本功！";
         } else {
             currentAnswer = a * b;
             document.getElementById('q-text').innerText = `${a} × ${b} = ?`;
-            document.getElementById('q-hint').innerText = "必须完全精确计算";
-            currentTrick = "可尝试首尾相乘法或拆分法加速。";
+            document.getElementById('q-hint').innerText = "完全精确计算";
+            currentTrick = "可尝试列竖式或将其拆分为 a × (整十数 + 尾数) 进行分配律计算。";
         }
-        currentTolerance = 0; // 精确匹配
+        currentTolerance = 0; 
     }
 
-    // 2. 资料分析 - 五位除三位
     function genDiv5() {
         let a = Math.floor(Math.random() * 90000) + 10000;
         let b = Math.floor(Math.random() * 900) + 100;
-        currentAnswer = a / b;
-        currentTolerance = currentAnswer * 0.015; // 1.5%误差
+        currentAnswer = a / b; currentTolerance = currentAnswer * 0.015; 
         document.getElementById('q-text').innerText = `${a} ÷ ${b} = ?`;
         document.getElementById('q-hint').innerText = "截位直除，允许误差 ±1.5%";
         let roundB = Math.round(b/10)*10;
-        currentTrick = `截位法：分母保留前两位，把 ${b} 看作 ${roundB}，计算 ${a} ÷ ${roundB} 即可。`;
+        currentTrick = `分母保留前两位（四舍五入），把 ${b} 看作 ${roundB}，算 ${a} ÷ ${roundB} 极速出数。`;
     }
 
-    // 3. 资料分析 - 乘法估算
     function genMulEst() {
-        let a = Math.floor(Math.random() * 900) + 100;
-        let b = Math.floor(Math.random() * 90) + 10;
-        currentAnswer = a * b;
-        currentTolerance = currentAnswer * 0.03; // 3%误差
+        let a = Math.floor(Math.random() * 900) + 100; let b = Math.floor(Math.random() * 90) + 10;
+        currentAnswer = a * b; currentTolerance = currentAnswer * 0.03; 
         document.getElementById('q-text').innerText = `${a} × ${b} = ?`;
         document.getElementById('q-hint').innerText = "乘法估算，允许误差 ±3%";
-        currentTrick = `乘法估算原则：一进一舍保持平衡，看选项差距判断截位位数。`;
+        currentTrick = `乘法估算原则：一进一舍保持平衡。例如 124 × 38 可以看作 120 × 40。`;
     }
 
-    // 4. 分数互化
     function genFraction() {
         let item = fractions[Math.floor(Math.random() * fractions.length)];
         document.getElementById('q-text').innerText = `${item.f} = ? %`;
         document.getElementById('q-hint').innerText = "输入数值，允许误差 ±0.2";
-        currentAnswer = item.v;
-        currentTolerance = 0.2;
-        currentTrick = `背诵口诀：${item.f} 约等于 ${item.v}%。`;
+        currentAnswer = item.v; currentTolerance = 0.2;
+        currentTrick = `必须死记硬背！${item.f} 约等于 ${item.v}%。`;
     }
 
-    // 5. 增长量 N+1
     function genGrowth() {
         let item = fractions[Math.floor(Math.random() * fractions.length)];
-        let val = Math.floor(Math.random() * 5000) + 3000; 
-        let isInc = Math.random() > 0.3; 
+        let val = Math.floor(Math.random() * 5000) + 3000; let isInc = Math.random() > 0.3; 
         let rate = (item.v + (Math.random()*0.4 - 0.2)).toFixed(1); 
         
         document.getElementById('q-text').innerHTML = `现期: ${val}<br><span style="font-size:20px;">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`;
@@ -375,7 +402,7 @@
         let n = Math.round(100 / item.v);
         if (isInc) {
             currentAnswer = val / (n + 1);
-            currentTrick = `看到 ${rate}% 想到 1/${n}。增长用 n+1。\n${val} ÷ ${n+1} ≈ ${(val/(n+1)).toFixed(1)}`;
+            currentTrick = `看到 ${rate}% 想到 1/${n}。增加用 n+1。\n${val} ÷ ${n+1} ≈ ${(val/(n+1)).toFixed(1)}`;
         } else {
             currentAnswer = val / (n - 1);
             currentTrick = `看到下降 ${rate}% 想到 1/${n}。减少用 n-1。\n${val} ÷ ${n-1} ≈ ${(val/(n-1)).toFixed(1)}`;
@@ -383,19 +410,25 @@
         currentTolerance = currentAnswer * 0.03; 
     }
 
-    // 6. 基期量估算
     function genBase() {
-        let val = Math.floor(Math.random() * 7000) + 2000;
-        let rate = Math.floor(Math.random() * 25) + 5; 
+        let val = Math.floor(Math.random() * 7000) + 2000; let rate = Math.floor(Math.random() * 25) + 5; 
         let isInc = Math.random() > 0.5;
 
         document.getElementById('q-text').innerHTML = `现期: ${val}<br><span style="font-size:20px;">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`;
         document.getElementById('q-hint').innerText = `求基期量？允许误差 ±2%`;
 
         let r = isInc ? (1 + rate/100) : (1 - rate/100);
-        currentAnswer = val / r;
-        currentTolerance = currentAnswer * 0.02;
-        currentTrick = `基期 = 现期 / (1±r)。即计算 ${val} ÷ ${r.toFixed(2)}。结合截位法估算。`;
+        currentAnswer = val / r; currentTolerance = currentAnswer * 0.02;
+        currentTrick = `公式：现期 / (1±r)。结合截位法估算 ${val} ÷ ${r.toFixed(2)}。`;
+    }
+
+    // --- 测评时间评级获取 ---
+    function getSpeedEval(timeSec, mod) {
+        let th = TIME_THRESHOLDS[mod];
+        if (timeSec <= th[0]) return { text: "🏆 极佳", class: "tb-s", grade: "S" };
+        if (timeSec <= th[1]) return { text: "⚡ 优秀", class: "tb-a", grade: "A" };
+        if (timeSec <= th[2]) return { text: "✅ 合格", class: "tb-b", grade: "B" };
+        return { text: "⚠️ 超时", class: "tb-c", grade: "C" };
     }
 
     // --- 验证逻辑 ---
@@ -403,31 +436,38 @@
         let userVal = parseFloat(document.getElementById('ans-input').value);
         if (isNaN(userVal)) { alert("请输入数字！"); return; }
 
+        // 计算这道题花了多少时间
+        let timeSpent = (Date.now() - questionStartTime) / 1000;
+        sessionTimes.push(timeSpent);
+
         let isCorrect = false;
-        if (currentTolerance === 0) {
-            isCorrect = (userVal === currentAnswer); // 基础运算必须绝对相等
-        } else {
-            let diff = Math.abs(userVal - currentAnswer);
-            isCorrect = diff <= currentTolerance;
-        }
+        if (currentTolerance === 0) { isCorrect = (userVal === currentAnswer); } 
+        else { let diff = Math.abs(userVal - currentAnswer); isCorrect = diff <= currentTolerance; }
+
+        let speedEval = getSpeedEval(timeSpent, currentModule);
 
         const msgEl = document.getElementById('fb-msg');
         const trickEl = document.getElementById('trick-box');
+        const badgeEl = document.getElementById('time-badge');
         
         document.getElementById('ans-input').disabled = true;
         document.getElementById('btn-submit').style.display = 'none';
 
+        // 显示时间与评级标签
+        badgeEl.style.display = 'inline-block';
+        badgeEl.className = 'time-badge ' + speedEval.class;
+        badgeEl.innerText = `⏱️ 用时 ${timeSpent.toFixed(1)}s [${speedEval.text}]`;
+
         if (isCorrect) {
             correctCount++;
-            msgEl.innerText = currentTolerance === 0 ? "✅ 回答正确！" : `✅ 正确！(标准值约 ${currentAnswer.toFixed(1)})`;
+            msgEl.innerText = currentTolerance === 0 ? "回答正确！" : `正确！(标准值约 ${currentAnswer.toFixed(1)})`;
             msgEl.className = "feedback-msg correct";
-            // 答对了自动跳下一题 (稍微延迟给点反馈时间)
-            setTimeout(nextQuestion, 500);
+            // 答对了，延迟一会儿自动切下一题，让人看清评级
+            setTimeout(nextQuestion, 800);
         } else {
-            wrongCount++;
-            msgEl.innerText = `❌ 错误。(标准值约 ${currentAnswer.toFixed(1)})`;
+            msgEl.innerText = `错误。(标准值约 ${currentAnswer.toFixed(1)})`;
             msgEl.className = "feedback-msg wrong";
-            trickEl.innerHTML = `<strong>💡 速算解析：</strong><br>${currentTrick.replace(/\n/g, '<br>')}`;
+            trickEl.innerHTML = `<strong>💡 导师解析：</strong><br>${currentTrick}`;
             trickEl.style.display = 'block';
             document.getElementById('btn-next').style.display = 'block';
             document.getElementById('btn-next').focus();
@@ -435,12 +475,17 @@
     }
 
     function nextQuestion() {
-        if (currentQIndex >= totalQuestions) {
-            finishPractice();
-        } else {
-            currentQIndex++;
-            loadQuestion();
-        }
+        if (currentQIndex >= totalQuestions) { finishPractice(); } 
+        else { currentQIndex++; loadQuestion(); }
+    }
+
+    // --- 综合评价引擎 ---
+    function getLetterStyle(letter) {
+        if(letter === 'S') return "grade-circle grade-s";
+        if(letter === 'A') return "grade-circle grade-a";
+        if(letter === 'B') return "grade-circle grade-b";
+        if(letter === 'C') return "grade-circle grade-c";
+        return "grade-circle grade-d";
     }
 
     function finishPractice() {
@@ -448,17 +493,56 @@
         document.getElementById('practice-screen').style.display = 'none';
         document.getElementById('result-screen').style.display = 'flex';
         
-        let rate = Math.round((correctCount / totalQuestions) * 100);
-        document.getElementById('r-score').innerText = rate + "%";
-        document.getElementById('r-correct').innerText = correctCount;
-        document.getElementById('r-wrong').innerText = wrongCount;
+        document.getElementById('r-module-name').innerText = `模块：${moduleNames[currentModule]} (${totalQuestions}题)`;
         
-        let m = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-        let s = String(secondsElapsed % 60).padStart(2, '0');
-        document.getElementById('r-time').innerText = `${m}:${s}`;
+        // 1. 准确率评估
+        let accRate = (correctCount / totalQuestions) * 100;
+        let accGrade = 'D';
+        if (accRate === 100) accGrade = 'S';
+        else if (accRate >= 90) accGrade = 'A';
+        else if (accRate >= 80) accGrade = 'B';
+        else if (accRate >= 60) accGrade = 'C';
+        
+        // 2. 速度评估
+        let totalSum = sessionTimes.reduce((a, b) => a + b, 0);
+        let avgTime = totalSum / sessionTimes.length;
+        let th = TIME_THRESHOLDS[currentModule];
+        let spdGrade = 'D';
+        if (avgTime <= th[0]) spdGrade = 'S';
+        else if (avgTime <= th[1]) spdGrade = 'A';
+        else if (avgTime <= th[2]) spdGrade = 'B';
+        else if (avgTime <= th[2] * 1.3) spdGrade = 'C'; // 轻微超时算C，严重超时算D
+
+        // 3. UI 更新
+        document.getElementById('r-score').innerText = Math.round(accRate);
+        document.getElementById('r-correct').innerText = correctCount;
+        document.getElementById('r-total').innerText = totalQuestions;
+        document.getElementById('r-avg-time').innerText = avgTime.toFixed(1);
+
+        const elAcc = document.getElementById('acc-grade');
+        elAcc.innerText = accGrade; elAcc.className = getLetterStyle(accGrade);
+        
+        const elSpd = document.getElementById('spd-grade');
+        elSpd.innerText = spdGrade; elSpd.className = getLetterStyle(spdGrade);
+
+        // 4. 导师智能评语生成
+        let comment = "";
+        if (accGrade === 'S' && spdGrade === 'S') {
+            comment = "🏆 考神附体！准确率和速度双双拉满，这个模块你已经完全掌握，直接上考场吧！";
+        } else if (accRate < 60) {
+            comment = "⚠️ 准确率堪忧。速算的基石是做对，不要盲目追求速度。建议先放慢节奏，确保思路和公式无误。";
+        } else if (accGrade === 'S' || accGrade === 'A') {
+            if (spdGrade === 'C' || spdGrade === 'D') {
+                comment = "🐢 虽然算得很准，但耗时太长了。公考中资料分析的时间非常紧凑，建议多尝试【截位直除】和【化除为乘】技巧，大胆估算！";
+            } else {
+                comment = "🌟 表现非常不错！基本功很扎实，继续保持这个节奏刷题，保持题感。";
+            }
+        } else {
+            comment = "⚖️ 成绩中规中矩。在提速的同时出现了一些失误。注意看错题的【速算解析】，优化你的估算思路。";
+        }
+        document.getElementById('r-commentary').innerText = `导师评价：${comment}`;
     }
 
-    // 绑定回车键
     document.getElementById('ans-input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();

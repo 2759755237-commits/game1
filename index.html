@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>行测速算助手</title>
+    <title>行测资料分析 - 巅峰真题版 V21</title>
     <style>
         :root {
             --bg-color: #e8f5e9; --card-bg: #ffffff; --primary: #2e7d32; --primary-light: #c8e6c9;   
@@ -21,12 +21,10 @@
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; font-size: 18px; font-weight: bold; color: var(--primary); background: var(--card-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.05);}
         .header-title { display: flex; align-items: center; gap: 8px; }
         
-        /* 弹窗通用 */
-        .panel { background: #ffffff; border-radius: 16px; padding: 25px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 360px; max-height: 80vh; overflow-y: auto; }
+        .panel { background: #ffffff; border-radius: 16px; padding: 25px 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 360px; max-height: 85vh; overflow-y: auto; }
         .panel::-webkit-scrollbar { width: 0; }
         .panel-title { color: var(--primary); font-size: 24px; font-weight: 900; margin-bottom: 20px; }
 
-        /* 首页布局 */
         #home-screen { padding: 15px; display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; }
         #home-screen::-webkit-scrollbar { display: none; }
         
@@ -53,7 +51,7 @@
         .start-btn { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 15px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4); margin-top: 10px; margin-bottom: 20px;}
         .start-btn:active { transform: scale(0.98); }
 
-        /* 记忆卡片区 */
+        /* 记忆背诵 */
         #memorize-screen { display: none; flex-direction: column; height: 100vh; background: var(--bg-color); z-index: 30; }
         .mem-header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid var(--border); font-weight: bold; font-size: 16px; color: var(--primary); background: var(--card-bg);}
         .mem-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; perspective: 1000px; }
@@ -78,9 +76,9 @@
         .prac-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; overflow-y: auto;}
         .question-type { font-size: 13px; color: var(--success); background: #e8f5e9; padding: 4px 12px; border-radius: 20px; margin-bottom: 15px; font-weight: bold;}
         .question-text { font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center; line-height: 1.3;}
+        .question-text.long-text { font-size: 18px; font-weight: normal; text-align: left; background: #fff; padding: 15px; border-radius: 10px; border-left: 4px solid var(--primary); margin-bottom: 15px; }
         .question-hint { font-size: 13px; color: var(--text-sub); margin-bottom: 25px; text-align: center;}
         
-        /* 填空题与选择题区域 */
         .input-area { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 15px; }
         .answer-input { width: 100%; text-align: center; font-size: 32px; font-weight: bold; padding: 15px; border: 2px solid var(--border); border-radius: 12px; outline: none; color: var(--primary); background: #ffffff; }
         .answer-input:focus { border-color: var(--primary); }
@@ -97,28 +95,23 @@
         .feedback-msg { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
         .feedback-msg.correct { color: var(--success); } .feedback-msg.wrong { color: var(--danger); }
         .time-badge { display: inline-block; padding: 4px 10px; border-radius: 15px; font-size: 13px; font-weight: bold; margin-top: 5px; }
-        .tb-s { background: #e8f5e9; color: #2e7d32; } 
-        .tb-a { background: #e3f2fd; color: #1565c0; } 
-        .tb-b { background: #fff3e0; color: #ef6c00; } 
-        .tb-c { background: #ffebee; color: #c62828; }
+        .tb-s { background: #e8f5e9; color: #2e7d32; } .tb-a { background: #e3f2fd; color: #1565c0; } .tb-b { background: #fff3e0; color: #ef6c00; } .tb-c { background: #ffebee; color: #c62828; }
         .trick-info { font-size: 14px; color: #d84315; background: #fff3e0; padding: 15px; border-radius: 8px; text-align: left; display: none; line-height: 1.5; margin-top: 15px; border-left: 4px solid #ff9800;}
 
-        /* 结算界面 */
-        #result-screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px; background: rgba(0,0,0,0.6); position: fixed; top: 0; left: 0; width: 100%; z-index: 100;}
-        .grade-row { display: flex; justify-content: space-around; margin-bottom: 25px; margin-top: 10px;}
+        /* 结算界面与雷达图 */
+        #result-screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 15px; background: rgba(0,0,0,0.6); position: fixed; top: 0; left: 0; width: 100%; z-index: 100;}
+        .grade-row { display: flex; justify-content: space-around; margin-bottom: 15px; margin-top: 10px;}
         .grade-item { display: flex; flex-direction: column; align-items: center; }
-        .grade-circle { width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 900; margin-bottom: 8px; }
-        .grade-s { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50;} 
-        .grade-a { background: #e3f2fd; color: #1565c0; border: 2px solid #2196f3;} 
-        .grade-b { background: #fff3e0; color: #ef6c00; border: 2px solid #ff9800;} 
-        .grade-c { background: #ffebee; color: #c62828; border: 2px solid #f44336;}
-        .grade-label { font-size: 13px; font-weight: bold; color: var(--text-sub); }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; padding: 20px 0;}
+        .grade-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; margin-bottom: 8px; }
+        .grade-s { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50;} .grade-a { background: #e3f2fd; color: #1565c0; border: 2px solid #2196f3;} .grade-b { background: #fff3e0; color: #ef6c00; border: 2px solid #ff9800;} .grade-c { background: #ffebee; color: #c62828; border: 2px solid #f44336;}
+        .grade-label { font-size: 12px; font-weight: bold; color: var(--text-sub); }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; padding: 15px 0;}
         .stat-box { display: flex; flex-direction: column; }
-        .stat-val { font-size: 24px; font-weight: 900; color: var(--text-main); }
+        .stat-val { font-size: 22px; font-weight: 900; color: var(--text-main); }
         .stat-name { font-size: 12px; color: var(--text-sub); }
-        .commentary-box { background: #f1f8e9; padding: 15px; border-radius: 10px; font-size: 14px; color: #2e7d32; text-align: left; line-height: 1.5; font-weight: 500;}
-        .r-btn { margin-top: 20px; width: 100%; background: var(--primary); color: white; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; }
+        .commentary-box { background: #f1f8e9; padding: 12px; border-radius: 8px; font-size: 13px; color: #2e7d32; text-align: left; line-height: 1.5; font-weight: 500;}
+        .smart-diag-box { background: #fff3e0; padding: 12px; border-radius: 8px; font-size: 13px; color: #e65100; text-align: left; line-height: 1.5; font-weight: bold; margin-top: 10px; display: none; border-left: 4px solid #ff9800;}
+        .r-btn { margin-top: 15px; width: 100%; background: var(--primary); color: white; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; }
 
     </style>
 </head>
@@ -127,10 +120,7 @@
 <div class="app-container">
     
     <div class="header">
-        <div class="header-title">
-            <span style="font-size: 22px;">🎯</span>
-            <span>行测资料分析特训</span>
-        </div>
+        <div class="header-title"><span style="font-size: 22px;">🎯</span><span>行测资料分析特训 V21</span></div>
     </div>
 
     <div id="home-screen">
@@ -139,30 +129,25 @@
             <div class="heatmap-grid" id="heatmap"></div>
         </div>
 
-        <div class="section-title">📚 知识背诵卡片 (高照体系)</div>
-        <div class="grid-container" style="grid-template-columns: repeat(2, 1fr);">
-            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a;" onclick="startMemorize('formula')">核心公式大全<span class="sub">八大神技记忆</span></div>
-            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a;" onclick="startMemorize('fraction')">百化分背诵<span class="sub">形成肌肉记忆</span></div>
+        <div class="grid-container" style="grid-template-columns: 1fr; margin-bottom: 5px;">
+            <div class="module-btn" style="background:#ffebee; color:#c62828; border-color:#ef5350; padding: 15px; flex-direction: row; justify-content: space-between; padding: 15px 20px;" onclick="startExamMode()">
+                <div style="display:flex; flex-direction: column; align-items: flex-start;">
+                    <span style="font-size: 18px; font-weight: 900;">🏆 终极套卷模考</span>
+                    <span style="font-size: 12px; font-weight: normal; margin-top: 4px; color:#d32f2f;">15分钟倒计时 | 20题全真混合匹配</span>
+                </div>
+                <span style="font-size: 24px;">🚀</span>
+            </div>
         </div>
 
         <div class="section-title">🎯 考场突击与纠错</div>
         <div class="grid-container" style="grid-template-columns: repeat(2, 1fr);">
-            <div class="module-btn active" style="background:#fff3e0; color:#e65100; border-color:#e65100;" onclick="selectModule('mixed', this)">全真随机突击<span class="sub">全题型混合</span></div>
-            <div class="module-btn" style="background:#ffebee; color:#c62828;" onclick="selectModule('errorBook', this)">
-                错题本重练<span class="sub">攻克拉胯项</span>
-                <div class="badge" id="error-badge" style="display:none;">0</div>
-            </div>
-        </div>
-
-        <div class="section-title">⚡ 基础算力强化</div>
-        <div class="grid-container">
-            <div class="module-btn" onclick="selectModule('make100', this)">凑整练习<span class="sub">加法基石</span></div>
-            <div class="module-btn" onclick="selectModule('multiAdd', this)">多数连加<span class="sub">求总计必备</span></div>
-            <div class="module-btn" onclick="selectModule('specialMul', this)">特殊乘法<span class="sub">×11 / ×15</span></div>
+            <div class="module-btn active" style="background:#fff3e0; color:#e65100; border-color:#e65100;" onclick="selectModule('mixed', this)">常规随机突击<span class="sub">全题型混合</span></div>
+            <div class="module-btn" style="background:#e8eaf6; color:#283593;" onclick="selectModule('errorBook', this)">错题本重练<span class="sub">攻克拉胯项</span><div class="badge" id="error-badge" style="display:none;">0</div></div>
         </div>
 
         <div class="section-title">📊 资料分析核心模块</div>
         <div class="grid-container">
+            <div class="module-btn" style="background:#e3f2fd; color:#1565c0;" onclick="selectModule('findData', this)">定向找数<span class="sub">眼脑协调训练</span></div>
             <div class="module-btn" style="background:#e3f2fd; color:#1565c0;" onclick="selectModule('fractionTest', this)">百化分实战<span class="sub">百分数转分数</span></div>
             <div class="module-btn" onclick="selectModule('growth', this)">增长量计算<span class="sub">N+1 法则</span></div>
             <div class="module-btn" onclick="selectModule('base', this)">基期量估算<span class="sub">化除为乘</span></div>
@@ -170,9 +155,7 @@
             <div class="module-btn" onclick="selectModule('average', this)">平均数计算<span class="sub">总数÷个数</span></div>
             <div class="module-btn" style="background:#fce4ec; color:#8e24aa;" onclick="selectModule('weightDiff', this)">比重差判断<span class="sub">秒看升降</span></div>
             <div class="module-btn" style="background:#fce4ec; color:#8e24aa;" onclick="selectModule('cross', this)">十字交叉法<span class="sub">混合增速</span></div>
-            
             <div class="module-btn" onclick="selectModule('customDiv', this)">除法截位直除<span class="sub">自定义位数</span></div>
-            <div class="module-btn" onclick="selectModule('customMul', this)">乘法一进一舍<span class="sub">自定义位数</span></div>
         </div>
 
         <div class="custom-opts" id="opt-customDiv" style="display:none;">
@@ -180,26 +163,33 @@
             <div><select id="div-n1"><option value="4">4位</option><option value="5" selected>5位</option><option value="6">6位</option></select> ÷
                  <select id="div-n2"><option value="2">2位</option><option value="3" selected>3位</option><option value="4">4位</option></select></div>
         </div>
+
+        <div class="section-title">⚡ 基础算力强化</div>
+        <div class="grid-container">
+            <div class="module-btn" onclick="selectModule('make100', this)">凑整练习<span class="sub">加法基石</span></div>
+            <div class="module-btn" onclick="selectModule('multiAdd', this)">多数连加<span class="sub">求总计必备</span></div>
+            <div class="module-btn" onclick="selectModule('specialMul', this)">特殊乘法<span class="sub">×11 / ×15</span></div>
+            <div class="module-btn" onclick="selectModule('customMul', this)">乘法一进一舍<span class="sub">自定义位数</span></div>
+        </div>
         <div class="custom-opts" id="opt-customMul" style="display:none;">
             <span>乘数A × 乘数B：</span>
             <div><select id="mul-n1"><option value="2">2位</option><option value="3" selected>3位</option><option value="4">4位</option></select> ×
                  <select id="mul-n2"><option value="2" selected>2位</option><option value="3">3位</option><option value="4">4位</option></select></div>
         </div>
 
+        <div class="section-title">📚 知识背诵卡片 (高照体系)</div>
+        <div class="grid-container" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a;" onclick="startMemorize('formula')">核心公式大全<span class="sub">八大神技记忆</span></div>
+            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a;" onclick="startMemorize('fraction')">百化分背诵<span class="sub">形成肌肉记忆</span></div>
+        </div>
+
         <div class="settings-row" style="margin-top: 15px;">
             <span>答题模式</span>
-            <select class="setting-select" id="input-mode">
-                <option value="choice" selected>单选题 (模拟试卷)</option>
-                <option value="input">填空题 (硬核心算)</option>
-            </select>
+            <select class="setting-select" id="input-mode"><option value="choice" selected>单选题 (模拟试卷)</option><option value="input">填空题 (硬核心算)</option></select>
         </div>
         <div class="settings-row">
-            <span>题量设置</span>
-            <select class="setting-select" id="q-count">
-                <option value="5">5题 (热身)</option>
-                <option value="10" selected>10题 (标准)</option>
-                <option value="20">20题 (套卷)</option>
-            </select>
+            <span>常规题量</span>
+            <select class="setting-select" id="q-count"><option value="5">5题 (热身)</option><option value="10" selected>10题 (标准)</option><option value="20">20题 (突击)</option></select>
         </div>
 
         <button class="start-btn" onclick="startPractice()">启动特训</button>
@@ -217,7 +207,7 @@
     </div>
 
     <div id="practice-screen">
-        <div class="prac-header"><span class="btn-exit" onclick="exitPractice()">中止训练</span><span id="progress-text">1 / 10</span><span style="color:var(--danger);" id="timer-text">00:00</span></div>
+        <div class="prac-header"><span class="btn-exit" onclick="exitPractice()" id="btn-prac-exit">中止训练</span><span id="progress-text">1 / 10</span><span style="color:var(--danger);" id="timer-text">00:00</span></div>
         
         <div class="prac-content">
             <div class="question-type" id="q-type-label">题型</div>
@@ -242,11 +232,14 @@
             <div class="panel-title">特训报告</div>
             <div style="font-size:13px; color:var(--text-sub); margin-bottom:10px;" id="r-module-name"></div>
             
+            <canvas id="radarCanvas" width="220" height="220" style="margin: 0 auto; display: block;"></canvas>
+
             <div class="grade-row"><div class="grade-item"><div class="grade-circle" id="acc-grade">A</div><div class="grade-label">准确度评估</div></div><div class="grade-item"><div class="grade-circle" id="spd-grade">B</div><div class="grade-label">速度评估</div></div></div>
             <div class="stat-grid"><div class="stat-box"><div class="stat-val"><span id="r-score" style="color:var(--success);">80</span>%</div><div class="stat-name">综合正确率</div></div><div class="stat-box"><div class="stat-val"><span id="r-avg-time" style="color:var(--primary);">3.5</span>s</div><div class="stat-name">单题平均耗时</div></div></div>
             
-            <div style="font-size: 13px; color: var(--danger); font-weight: bold; margin-bottom: 15px;" id="r-error-notice"></div>
-            <div class="commentary-box" id="r-commentary"></div>
+            <div class="smart-diag-box" id="smart-diagnosis"></div>
+            <div class="commentary-box" id="r-commentary" style="margin-top:10px;"></div>
+            
             <button class="r-btn" onclick="backToHome()">返回首页</button>
         </div>
     </div>
@@ -262,16 +255,20 @@
     }
 
     // --- 数据存储管理 ---
-    let activityLog = JSON.parse(localStorage.getItem('study_activity_v20')) || {};
-    let errorBook = JSON.parse(localStorage.getItem('study_errors_v20')) || [];
+    let activityLog = JSON.parse(localStorage.getItem('study_activity_v21')) || {};
+    let errorBook = JSON.parse(localStorage.getItem('study_errors_v21')) || [];
+    
+    // 雷达图统计数据: c(正确数), t(总题数)
+    let radarStats = JSON.parse(localStorage.getItem('study_radar_v21')) || {
+        calc: {c:0, t:0}, mul: {c:0, t:0}, div: {c:0, t:0}, frac: {c:0, t:0}, formula: {c:0, t:0}, find: {c:0, t:0}
+    };
 
-    // 高照百化分核心要求（必须精通 1/2 到 1/20）
+    // --- 高照知识库 ---
     const fractions = [
         { f: '1/2', v: 50.0 }, { f: '1/3', v: 33.3 }, { f: '1/4', v: 25.0 }, { f: '1/5', v: 20.0 }, { f: '1/6', v: 16.7 }, { f: '1/7', v: 14.3 }, { f: '1/8', v: 12.5 }, { f: '1/9', v: 11.1 },
         { f: '1/11', v: 9.1 }, { f: '1/12', v: 8.3 }, { f: '1/13', v: 7.7 }, { f: '1/14', v: 7.1 }, { f: '1/15', v: 6.7 }, { f: '1/16', v: 6.3 }, { f: '1/17', v: 5.9 }, { f: '1/18', v: 5.6 }, { f: '1/19', v: 5.3 }, { f: '1/20', v: 5.0 }
     ];
 
-    // 结合高照老师体系的核心公式
     const formulas = [
         { title: "截位直除法", desc: "除法估算核心原则", formula: "分母保留前三位", note: "高照提示：分子不动或跟着截相同位数。看选项首位或前两位差异决定精度。" },
         { title: "化除为乘 (基期量)", desc: "当增长率 |r| < 5% 时使用", formula: "现期 × (1 - r)", note: "高照提示：如果 r 较小，现期 ÷ (1+r) 直接转化为现期 × (1-r) 秒出答案。" },
@@ -284,44 +281,27 @@
     ];
 
     const moduleNames = { 
-        'fractionTest': '百化分实战', 'growth': '增长量速算', 'base': '基期量估算', 'weight': '比重估算', 'average': '平均数估算',
+        'findData': '定向找数', 'fractionTest': '百化分实战', 'growth': '增长量速算', 'base': '基期量估算', 'weight': '比重估算', 'average': '平均数估算',
         'weightDiff': '比重差判断', 'cross': '十字交叉法', 'customDiv': '除法截位直除', 'customMul': '乘法一进一舍', 
-        'make100': '凑整练习', 'multiAdd': '多数连加', 'specialMul': '特殊乘法', 'mixed': '全真混合突击', 'errorBook': '错题本重练' 
+        'make100': '凑整练习', 'multiAdd': '多数连加', 'specialMul': '特殊乘法', 'mixed': '全真混合突击', 'errorBook': '错题本重练', 'exam': '终极套卷模考'
     };
     
-    const dataModules = ['fractionTest', 'growth', 'base', 'weight', 'average', 'weightDiff', 'cross', 'customDiv', 'customMul']; 
+    const dataModules = ['findData', 'fractionTest', 'growth', 'base', 'weight', 'average', 'weightDiff', 'cross', 'customDiv', 'customMul']; 
 
     const TIME_THRESHOLDS = {
-        'fractionTest': [2, 4, 6], 'make100': [3, 5, 8], 'specialMul': [5, 8, 12], 'multiAdd': [10, 15, 20], 
+        'findData': [5, 10, 15], 'fractionTest': [2, 4, 6], 'make100': [3, 5, 8], 'specialMul': [5, 8, 12], 'multiAdd': [10, 15, 20], 
         'customDiv': [10, 15, 25], 'customMul': [8, 15, 20], 'growth': [10, 18, 25], 'base': [10, 18, 25], 
         'weight': [10, 18, 25], 'average': [10, 18, 25], 'weightDiff': [8, 12, 18], 'cross': [12, 20, 30]
     };
 
-    let currentModule = 'mixed';
-    let inputMode = 'choice'; 
-    let totalQuestions = 10;
-    let currentQIndex = 1;
-    let correctCount = 0;
-    
-    let currentAnswer = 0;
-    let currentTolerance = 0;
-    let currentTrick = "";
-    let currentRealModule = ""; 
-    let currentQObj = null; 
-    let choiceOptions = [];
-    let correctChoiceIndex = -1;
+    let currentModule = 'mixed'; let inputMode = 'choice'; let totalQuestions = 10; let currentQIndex = 1; let correctCount = 0;
+    let currentAnswer = 0; let currentTolerance = 0; let currentTrick = ""; let currentRealModule = ""; let currentQObj = null; let choiceOptions = []; let correctChoiceIndex = -1;
+    let timerInterval; let totalSecondsElapsed = 0; let examTimeLeft = 900; let questionStartTime = 0; let sessionTimes = []; let answeredThisQ = false;
 
-    let timerInterval;
-    let totalSecondsElapsed = 0;
-    let questionStartTime = 0;
-    let sessionTimes = []; 
-    let answeredThisQ = false;
-
-    // --- 打卡图逻辑 ---
+    // --- 打卡图 ---
     function initHeatmap() {
         const grid = document.getElementById('heatmap'); grid.innerHTML = '';
         let today = new Date(); let totalDone = 0;
-        
         for (let i = 6; i >= 0; i--) {
             let d = new Date(today); d.setDate(today.getDate() - i);
             let dateStr = d.toISOString().split('T')[0];
@@ -337,24 +317,34 @@
             grid.appendChild(cell);
         }
         document.getElementById('total-done-text').innerText = `总计: ${totalDone}题`;
-        
         const badge = document.getElementById('error-badge');
-        if(errorBook.length > 0) { badge.style.display = 'block'; badge.innerText = errorBook.length; }
-        else { badge.style.display = 'none'; }
+        if(errorBook.length > 0) { badge.style.display = 'block'; badge.innerText = errorBook.length; } else { badge.style.display = 'none'; }
     }
     initHeatmap();
 
     function logActivity() {
         let dateStr = new Date().toISOString().split('T')[0];
         activityLog[dateStr] = (activityLog[dateStr] || 0) + 1;
-        localStorage.setItem('study_activity_v20', JSON.stringify(activityLog));
+        localStorage.setItem('study_activity_v21', JSON.stringify(activityLog));
+    }
+    function updateRadarStats(mod, isCorrect) {
+        let key = 'formula';
+        if(['add2','add3','make100','multiAdd'].includes(mod)) key='calc';
+        else if(['mul2','specialMul','customMul','mulEst'].includes(mod)) key='mul';
+        else if(['div5','customDiv'].includes(mod)) key='div';
+        else if(['fractionTest'].includes(mod)) key='frac';
+        else if(['findData'].includes(mod)) key='find';
+
+        radarStats[key].t++;
+        if(isCorrect) radarStats[key].c++;
+        localStorage.setItem('study_radar_v21', JSON.stringify(radarStats));
     }
 
     // --- 界面控制 ---
     function selectModule(mod, btnEl) {
         currentModule = mod;
         document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
-        btnEl.classList.add('active');
+        if(btnEl) btnEl.classList.add('active');
         
         document.getElementById('opt-customDiv').style.display = (mod === 'customDiv') ? 'flex' : 'none';
         document.getElementById('opt-customMul').style.display = (mod === 'customMul') ? 'flex' : 'none';
@@ -362,48 +352,46 @@
 
     // --- 知识背诵闪卡模块 ---
     let memType = ''; let memIndex = 0; let memList = [];
-    
     function startMemorize(type) {
         memType = type; memIndex = 0; memList = type === 'formula' ? formulas : fractions;
-        document.getElementById('home-screen').style.display = 'none';
-        document.getElementById('memorize-screen').style.display = 'flex';
-        document.getElementById('mem-title').innerText = type === 'formula' ? "高照核心公式" : "百化分速记表";
-        loadCard();
+        document.getElementById('home-screen').style.display = 'none'; document.getElementById('memorize-screen').style.display = 'flex';
+        document.getElementById('mem-title').innerText = type === 'formula' ? "高照核心公式" : "百化分速记表"; loadCard();
     }
     function loadCard() {
         document.getElementById('mem-progress').innerText = `${memIndex + 1}/${memList.length}`;
         document.getElementById('flashcard').classList.remove('is-flipped');
-        
         let item = memList[memIndex];
         if (memType === 'formula') {
-            document.getElementById('card-front-title').innerText = item.title;
-            document.getElementById('card-front-desc').innerText = item.desc;
-            document.getElementById('card-back-formula').innerText = item.formula;
-            document.getElementById('card-back-note').innerHTML = "<strong>💡 高照解析：</strong><br>" + item.note;
+            document.getElementById('card-front-title').innerText = item.title; document.getElementById('card-front-desc').innerText = item.desc;
+            document.getElementById('card-back-formula').innerText = item.formula; document.getElementById('card-back-note').innerHTML = "<strong>💡 高照解析：</strong><br>" + item.note;
         } else {
-            document.getElementById('card-front-title').innerText = item.f;
-            document.getElementById('card-front-desc').innerText = "对应的百分数是多少？";
-            document.getElementById('card-back-formula').innerText = item.v + "%";
-            document.getElementById('card-back-note').innerText = `实战应用：题目出现 ${item.v}% 左右的增速，立刻想到化为 ${item.f} 参与计算。`;
+            document.getElementById('card-front-title').innerText = item.f; document.getElementById('card-front-desc').innerText = "对应的百分数是多少？";
+            document.getElementById('card-back-formula').innerText = item.v + "%"; document.getElementById('card-back-note').innerText = `实战应用：题目出现 ${item.v}% 左右的增速，立刻想到化为 ${item.f} 参与计算。`;
         }
     }
     function flipCard() { document.getElementById('flashcard').classList.toggle('is-flipped'); vibrate('success'); }
     function prevCard() { if(memIndex > 0) { memIndex--; loadCard(); } }
-    function nextCard() { if(memIndex < memList.length - 1) { memIndex++; loadCard(); } else { alert("太棒了！已完成本组知识背诵！"); exitMemorize(); } }
+    function nextCard() { if(memIndex < memList.length - 1) { memIndex++; loadCard(); } else { alert("太棒了！已完成本组背诵！"); exitMemorize(); } }
     function exitMemorize() { document.getElementById('memorize-screen').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; }
 
     // --- 练习启动 ---
+    function startExamMode() { selectModule('exam'); startPractice(); }
+
     function startPractice() {
         if(currentModule === 'errorBook' && errorBook.length === 0) { alert('🎉 错题本已被清空！去全真突击里检测一下自己吧！'); return; }
 
-        totalQuestions = parseInt(document.getElementById('q-count').value);
-        if(currentModule === 'errorBook') totalQuestions = Math.min(totalQuestions, errorBook.length);
+        if(currentModule === 'exam') {
+            totalQuestions = 20; inputMode = 'choice'; examTimeLeft = 900;
+            document.getElementById('btn-prac-exit').style.display = 'none'; // 模考不可退出
+        } else {
+            totalQuestions = parseInt(document.getElementById('q-count').value);
+            if(currentModule === 'errorBook') totalQuestions = Math.min(totalQuestions, errorBook.length);
+            inputMode = document.getElementById('input-mode').value;
+            document.getElementById('btn-prac-exit').style.display = 'block';
+        }
 
-        inputMode = document.getElementById('input-mode').value;
         currentQIndex = 1; correctCount = 0; totalSecondsElapsed = 0; sessionTimes = [];
-
-        document.getElementById('home-screen').style.display = 'none';
-        document.getElementById('practice-screen').style.display = 'flex';
+        document.getElementById('home-screen').style.display = 'none'; document.getElementById('practice-screen').style.display = 'flex';
         
         if (inputMode === 'choice') { document.getElementById('area-input').style.display = 'none'; document.getElementById('area-choice').style.display = 'grid'; } 
         else { document.getElementById('area-input').style.display = 'flex'; document.getElementById('area-choice').style.display = 'none'; }
@@ -411,16 +399,28 @@
         startTimer(); loadQuestion();
     }
 
-    function exitPractice() { clearInterval(timerInterval); document.getElementById('practice-screen').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; initHeatmap(); }
+    function exitPractice() { 
+        if(confirm("确定要中止当前的训练吗？")) {
+            clearInterval(timerInterval); document.getElementById('practice-screen').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; initHeatmap(); 
+        }
+    }
     function backToHome() { document.getElementById('result-screen').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; initHeatmap(); }
 
     function startTimer() {
-        document.getElementById('timer-text').innerText = "00:00";
+        document.getElementById('timer-text').innerText = currentModule === 'exam' ? "15:00" : "00:00";
+        document.getElementById('timer-text').style.color = currentModule === 'exam' ? "var(--danger)" : "var(--primary)";
+        
         timerInterval = setInterval(() => {
-            totalSecondsElapsed++;
-            let m = String(Math.floor(totalSecondsElapsed / 60)).padStart(2, '0');
-            let s = String(totalSecondsElapsed % 60).padStart(2, '0');
-            document.getElementById('timer-text').innerText = `${m}:${s}`;
+            if(currentModule === 'exam') {
+                examTimeLeft--;
+                let m = String(Math.floor(examTimeLeft / 60)).padStart(2, '0'); let s = String(examTimeLeft % 60).padStart(2, '0');
+                document.getElementById('timer-text').innerText = `${m}:${s}`;
+                if(examTimeLeft <= 0) { clearInterval(timerInterval); alert("时间到！系统自动交卷。"); finishPractice(); }
+            } else {
+                totalSecondsElapsed++;
+                let m = String(Math.floor(totalSecondsElapsed / 60)).padStart(2, '0'); let s = String(totalSecondsElapsed % 60).padStart(2, '0');
+                document.getElementById('timer-text').innerText = `${m}:${s}`;
+            }
         }, 1000);
     }
 
@@ -428,34 +428,28 @@
     function loadQuestion() {
         answeredThisQ = false;
         document.getElementById('progress-text').innerText = `${currentQIndex} / ${totalQuestions}`;
+        document.getElementById('fb-msg').innerText = ''; document.getElementById('time-badge').style.display = 'none'; document.getElementById('trick-box').style.display = 'none'; document.getElementById('btn-next').style.display = 'none';
         
-        document.getElementById('fb-msg').innerText = '';
-        document.getElementById('time-badge').style.display = 'none';
-        document.getElementById('trick-box').style.display = 'none';
-        document.getElementById('btn-next').style.display = 'none';
-        
-        if (inputMode === 'input') {
-            let inp = document.getElementById('ans-input');
-            inp.value = ''; inp.disabled = false; inp.focus();
-            document.getElementById('btn-submit').style.display = 'block';
-        } else {
-            for(let i=0; i<4; i++) {
-                let btn = document.getElementById('c-btn-'+i);
-                btn.className = 'choice-btn'; btn.disabled = false;
-            }
-        }
+        if (inputMode === 'input') { let inp = document.getElementById('ans-input'); inp.value = ''; inp.disabled = false; inp.focus(); document.getElementById('btn-submit').style.display = 'block'; } 
+        else { for(let i=0; i<4; i++) { let btn = document.getElementById('c-btn-'+i); btn.className = 'choice-btn'; btn.disabled = false; } }
 
         if (currentModule === 'errorBook') {
-            let eq = errorBook[0];
-            currentRealModule = eq.mod;
-            document.getElementById('q-text').innerHTML = eq.qHtml;
-            document.getElementById('q-hint').innerText = "错题重练 - 请仔细作答";
-            currentAnswer = eq.ans; currentTolerance = eq.tol; currentTrick = eq.trick;
-            currentQObj = eq;
+            let eq = errorBook[0]; currentRealModule = eq.mod; document.getElementById('q-text').innerHTML = eq.qHtml; document.getElementById('q-hint').innerText = "错题重练 - 请仔细作答"; currentAnswer = eq.ans; currentTolerance = eq.tol; currentTrick = eq.trick; currentQObj = eq;
         } else {
-            currentRealModule = currentModule === 'mixed' ? dataModules[Math.floor(Math.random() * dataModules.length)] : currentModule;
+            // 路由策略
+            if (currentModule === 'exam') {
+                let r = Math.random();
+                if(r < 0.2) currentRealModule = 'findData'; // 20% 找数
+                else if(r < 0.8) currentRealModule = ['growth', 'weight', 'base', 'average'][Math.floor(Math.random()*4)]; // 60% 基础算式
+                else currentRealModule = ['weightDiff', 'cross', 'mulEst', 'div5'][Math.floor(Math.random()*4)]; // 20% 综合估算
+            } else if (currentModule === 'mixed') {
+                currentRealModule = dataModules[Math.floor(Math.random() * dataModules.length)];
+            } else {
+                currentRealModule = currentModule;
+            }
             
-            if (currentRealModule === 'fractionTest') genFractionTest();
+            if (currentRealModule === 'findData') genFindData();
+            else if (currentRealModule === 'fractionTest') genFractionTest();
             else if (currentRealModule === 'make100') genMake100();
             else if (currentRealModule === 'multiAdd') genMultiAdd();
             else if (currentRealModule === 'specialMul') genSpecialMul();
@@ -477,33 +471,29 @@
     }
 
     // -- 题目生成器 --
-    function genMake100() { let target = Math.random() > 0.5 ? 100 : 1000; let a = Math.floor(Math.random() * (target - 11)) + 11; currentAnswer = target - a; currentTolerance = 0; document.getElementById('q-text').innerHTML = `${a} + ? = ${target}`; document.getElementById('q-hint').innerText = "精确计算互补数"; currentTrick = `凑整法：从高位到低位，高位凑 9，个位凑 10。`; }
-    function genMultiAdd() { let nums = []; let sum = 0; for(let i=0; i<4; i++) { let n = Math.floor(Math.random() * 90) + 10; nums.push(n); sum += n; } currentAnswer = sum; currentTolerance = 0; document.getElementById('q-text').innerHTML = nums.join(' + ') + ' = ?'; document.getElementById('q-hint').innerText = "精确连加"; currentTrick = `连加技巧：先找能“凑整”的尾数对相加，最后再加零碎数字。`; }
-    function genSpecialMul() { let types = [5, 11, 15]; let m = types[Math.floor(Math.random() * 3)]; let a = Math.floor(Math.random() * 90) + 10; currentAnswer = a * m; currentTolerance = 0; document.getElementById('q-text').innerHTML = `${a} × ${m} = ?`; document.getElementById('q-hint').innerText = "特殊乘法速算"; if(m===5) currentTrick=`乘5神技：折半加零。将 ${a} ÷ 2，再乘 10。`; else if(m===11) currentTrick=`乘11神技：两头一拉，中间相加。`; else currentTrick=`乘15神技：本数加半数，再乘以 10。`; }
-    function genFractionTest() { let item = fractions[Math.floor(Math.random() * fractions.length)]; document.getElementById('q-text').innerHTML = `${item.f} = ? %`; document.getElementById('q-hint').innerText = "高照百化分要求：绝对肌肉记忆 (误差 ±0.2)"; currentAnswer = item.v; currentTolerance = 0.2; currentTrick = `高照口诀：${item.f} ≈ ${item.v}%。没记住就多翻翻卡片！`; }
-    function genCustomDiv() { let n1 = parseInt(document.getElementById('div-n1').value); let n2 = parseInt(document.getElementById('div-n2').value); let a = Math.floor(Math.random() * (Math.pow(10, n1) - Math.pow(10, n1-1))) + Math.pow(10, n1-1); let b = Math.floor(Math.random() * (Math.pow(10, n2) - Math.pow(10, n2-1))) + Math.pow(10, n2-1); currentAnswer = a / b; currentTolerance = currentAnswer * 0.015; document.getElementById('q-text').innerHTML = `${a} ÷ ${b} = ?`; document.getElementById('q-hint').innerText = `截位直除 (${n1}位÷${n2}位)`; let roundB = Math.round(b / Math.pow(10, n2-3)) * Math.pow(10, n2-3); currentTrick = `高照截位法：分母保留前三位有效数字（四舍五入）。把 ${b} 看作 ${roundB} 直除。`; }
-    function genCustomMul() { let n1 = parseInt(document.getElementById('mul-n1').value); let n2 = parseInt(document.getElementById('mul-n2').value); let a = Math.floor(Math.random() * (Math.pow(10, n1) - Math.pow(10, n1-1))) + Math.pow(10, n1-1); let b = Math.floor(Math.random() * (Math.pow(10, n2) - Math.pow(10, n2-1))) + Math.pow(10, n2-1); currentAnswer = a * b; currentTolerance = currentAnswer * 0.03; document.getElementById('q-text').innerHTML = `${a} × ${b} = ?`; document.getElementById('q-hint').innerText = `乘法估算 (${n1}位×${n2}位)`; currentTrick = `高照估算原则：一进一舍保持平衡。`; }
-    function genGrowth() { let item = fractions[Math.floor(Math.random() * fractions.length)]; let val = Math.floor(Math.random() * 5000) + 3000; let isInc = Math.random() > 0.3; let rate = (item.v + (Math.random()*0.4 - 0.2)).toFixed(1); document.getElementById('q-text').innerHTML = `现期量: ${val}<br><span style="font-size:22px; color:var(--danger)">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`; document.getElementById('q-hint').innerText = `求${isInc?'增长量':'减少量'}估算值`; let n = Math.round(100 / item.v); if (isInc) { currentAnswer = val / (n + 1); currentTrick = `高照 N+1 法则：${rate}% 对应 1/${n}。增加用 n+1。\n计算 ${val} ÷ ${n+1} ≈ ${(val/(n+1)).toFixed(1)}`; } else { currentAnswer = val / (n - 1); currentTrick = `高照 N+1 法则：${rate}% 对应 1/${n}。减少用 n-1。\n计算 ${val} ÷ ${n-1} ≈ ${(val/(n-1)).toFixed(1)}`; } currentTolerance = currentAnswer * 0.03; }
-    function genBase() { let val = Math.floor(Math.random() * 7000) + 2000; let rate = Math.floor(Math.random() * 25) + 5; let isInc = Math.random() > 0.5; document.getElementById('q-text').innerHTML = `现期量: ${val}<br><span style="font-size:22px; color:var(--danger)">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`; document.getElementById('q-hint').innerText = `求基期量估算值`; let r = isInc ? (1 + rate/100) : (1 - rate/100); currentAnswer = val / r; currentTolerance = currentAnswer * 0.02; currentTrick = `化除为乘(当r较小时) 或 直接截位直除 ${val} ÷ ${r.toFixed(2)}。`; }
-    function genWeight() { let whole = Math.floor(Math.random() * 50000) + 10000; let part = Math.floor(Math.random() * (whole - 2000)) + 1000; document.getElementById('q-text').innerHTML = `部分量: ${part}<br><span style="font-size:22px; color:var(--primary)">整体量: ${whole}</span>`; document.getElementById('q-hint').innerText = `求现期比重(%)`; currentAnswer = (part / whole) * 100; currentTolerance = currentAnswer * 0.02; currentTrick = `比重 = 部分 ÷ 整体。分母截取前三位进行直除。`; }
-    function genAverage() { let total = Math.floor(Math.random() * 50000) + 10000; let count = Math.floor(Math.random() * 90) + 10; document.getElementById('q-text').innerHTML = `总数: ${total}<br><span style="font-size:22px; color:var(--primary)">个数: ${count}</span>`; document.getElementById('q-hint').innerText = `求现期平均数`; currentAnswer = total / count; currentTolerance = currentAnswer * 0.02; currentTrick = `平均数 = 总数 ÷ 个数。分母截取前三位直除。`; }
-    
-    function genWeightDiff() { 
-        let P = Math.floor(Math.random()*40) + 20; let a = Math.floor(Math.random()*30) - 5; let b = Math.floor(Math.random()*30) - 5; if(a===b) b+=5;
-        currentAnswer = Math.abs((P / 100) * (a - b) / (1 + a/100)); 
-        document.getElementById('q-text').innerHTML = `部分增速(a): ${a}%<br><span style="font-size:22px; color:var(--danger)">整体增速(b): ${b}%, 现期比重: ${P}%</span>`; document.getElementById('q-hint').innerText = `求比重差绝对值 (百分点)`;
-        currentTolerance = 1.0; 
-        currentTrick = `高照口诀：1.判方向：a > b 上升。 2.判大小：结果必定 < |a - b| = ${Math.abs(a-b)}。选小于绝对差的最小项！`; 
-    }
-    function genCross() { 
-        let r = Math.floor(Math.random()*10) + 10; let a = r + Math.floor(Math.random()*8) + 2; let b = r - Math.floor(Math.random()*8) - 2;
-        currentAnswer = (r - b) / (a - r);
-        document.getElementById('q-text').innerHTML = `部分A增速: ${a}%<br><span style="font-size:22px; color:var(--danger)">部分B: ${b}%, 整体: ${r}%</span>`; document.getElementById('q-hint').innerText = `求A与B的基期量比值 (小数)`;
-        currentTolerance = 0.5;
-        currentTrick = `高照十字交叉：距离之比等于基期量之反比。A的距离=${a-r}，B的距离=${r-b}。所以 A基/B基 = ${r-b} / ${a-r}。`; 
+    function genFindData() { 
+        let year = 2020 + Math.floor(Math.random()*5); let val1 = Math.floor(Math.random()*9000)+1000; let val2 = (Math.random()*20).toFixed(1); 
+        let text = `<span style="font-size:16px; line-height:1.6; text-align:left; display:block;">${year}年第一季度，某省实现地区生产总值 <b>${val1}</b> 亿元，同比增长 <b>${val2}%</b>，其中第一产业...</span>`;
+        let isAskVal = Math.random() > 0.5; document.getElementById('q-text').className = "question-text long-text"; document.getElementById('q-text').innerHTML = text;
+        if(isAskVal) { document.getElementById('q-hint').innerText = "🔍 求：地区生产总值的现期量"; currentAnswer = val1; } 
+        else { document.getElementById('q-hint').innerText = "🔍 求：地区生产总值的同比增长率(%)"; currentAnswer = parseFloat(val2); }
+        currentTolerance = 0; currentTrick = `考场扫读技巧：先看题干问的是什么时间（如${year}年）、什么主体（地区生产总值）、什么指标（现期还是增速），再回段落精确定位。`;
     }
 
-    // --- 安全去重单选题选项生成 ---
+    function genMake100() { document.getElementById('q-text').className = "question-text"; let target = Math.random() > 0.5 ? 100 : 1000; let a = Math.floor(Math.random() * (target - 11)) + 11; currentAnswer = target - a; currentTolerance = 0; document.getElementById('q-text').innerHTML = `${a} + ? = ${target}`; document.getElementById('q-hint').innerText = "精确计算互补数"; currentTrick = `凑整法：从高位到低位，高位凑 9，个位凑 10。`; }
+    function genMultiAdd() { document.getElementById('q-text').className = "question-text"; let nums = []; let sum = 0; for(let i=0; i<4; i++) { let n = Math.floor(Math.random() * 90) + 10; nums.push(n); sum += n; } currentAnswer = sum; currentTolerance = 0; document.getElementById('q-text').innerHTML = nums.join(' + ') + ' = ?'; document.getElementById('q-hint').innerText = "精确连加"; currentTrick = `连加技巧：先找能“凑整”的尾数对相加。`; }
+    function genSpecialMul() { document.getElementById('q-text').className = "question-text"; let types = [5, 11, 15]; let m = types[Math.floor(Math.random() * 3)]; let a = Math.floor(Math.random() * 90) + 10; currentAnswer = a * m; currentTolerance = 0; document.getElementById('q-text').innerHTML = `${a} × ${m} = ?`; document.getElementById('q-hint').innerText = "特殊乘法速算"; if(m===5) currentTrick=`乘5：折半加零。`; else if(m===11) currentTrick=`乘11：两头一拉，中间相加。`; else currentTrick=`乘15：本数加半数，再乘 10。`; }
+    function genFractionTest() { document.getElementById('q-text').className = "question-text"; let item = fractions[Math.floor(Math.random() * fractions.length)]; document.getElementById('q-text').innerHTML = `${item.f} = ? %`; document.getElementById('q-hint').innerText = "高照百化分要求：绝对肌肉记忆"; currentAnswer = item.v; currentTolerance = 0.2; currentTrick = `高照口诀：${item.f} ≈ ${item.v}%。`; }
+    function genCustomDiv() { document.getElementById('q-text').className = "question-text"; let n1 = parseInt(document.getElementById('div-n1').value||5); let n2 = parseInt(document.getElementById('div-n2').value||3); let a = Math.floor(Math.random() * (Math.pow(10, n1) - Math.pow(10, n1-1))) + Math.pow(10, n1-1); let b = Math.floor(Math.random() * (Math.pow(10, n2) - Math.pow(10, n2-1))) + Math.pow(10, n2-1); currentAnswer = a / b; currentTolerance = currentAnswer * 0.015; document.getElementById('q-text').innerHTML = `${a} ÷ ${b} = ?`; document.getElementById('q-hint').innerText = `截位直除 (${n1}位÷${n2}位)`; let roundB = Math.round(b / Math.pow(10, n2-3)) * Math.pow(10, n2-3); currentTrick = `高照截位法：分母保留前三位有效数字（四舍五入）。把 ${b} 看作 ${roundB} 直除。`; }
+    function genCustomMul() { document.getElementById('q-text').className = "question-text"; let n1 = parseInt(document.getElementById('mul-n1').value||3); let n2 = parseInt(document.getElementById('mul-n2').value||2); let a = Math.floor(Math.random() * (Math.pow(10, n1) - Math.pow(10, n1-1))) + Math.pow(10, n1-1); let b = Math.floor(Math.random() * (Math.pow(10, n2) - Math.pow(10, n2-1))) + Math.pow(10, n2-1); currentAnswer = a * b; currentTolerance = currentAnswer * 0.03; document.getElementById('q-text').innerHTML = `${a} × ${b} = ?`; document.getElementById('q-hint').innerText = `乘法估算 (${n1}位×${n2}位)`; currentTrick = `高照估算原则：一进一舍保持平衡。`; }
+    function genGrowth() { document.getElementById('q-text').className = "question-text"; let item = fractions[Math.floor(Math.random() * fractions.length)]; let val = Math.floor(Math.random() * 5000) + 3000; let isInc = Math.random() > 0.3; let rate = (item.v + (Math.random()*0.4 - 0.2)).toFixed(1); document.getElementById('q-text').innerHTML = `现期量: ${val}<br><span style="font-size:22px; color:var(--danger)">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`; document.getElementById('q-hint').innerText = `求${isInc?'增长量':'减少量'}估算值`; let n = Math.round(100 / item.v); if (isInc) { currentAnswer = val / (n + 1); currentTrick = `高照 N+1 法则：${rate}% 对应 1/${n}。增加用 n+1。\n计算 ${val} ÷ ${n+1} ≈ ${(val/(n+1)).toFixed(1)}`; } else { currentAnswer = val / (n - 1); currentTrick = `高照 N-1 法则：${rate}% 对应 1/${n}。减少用 n-1。\n计算 ${val} ÷ ${n-1} ≈ ${(val/(n-1)).toFixed(1)}`; } currentTolerance = currentAnswer * 0.03; }
+    function genBase() { document.getElementById('q-text').className = "question-text"; let val = Math.floor(Math.random() * 7000) + 2000; let rate = Math.floor(Math.random() * 25) + 5; let isInc = Math.random() > 0.5; document.getElementById('q-text').innerHTML = `现期量: ${val}<br><span style="font-size:22px; color:var(--danger)">${isInc?'同比增加':'同比下降'}: ${rate}%</span>`; document.getElementById('q-hint').innerText = `求基期量估算值`; let r = isInc ? (1 + rate/100) : (1 - rate/100); currentAnswer = val / r; currentTolerance = currentAnswer * 0.02; currentTrick = `基期 = 现期 / (1±r)。结合截位估算 ${val} ÷ ${r.toFixed(2)}。`; }
+    function genWeight() { document.getElementById('q-text').className = "question-text"; let whole = Math.floor(Math.random() * 50000) + 10000; let part = Math.floor(Math.random() * (whole - 2000)) + 1000; document.getElementById('q-text').innerHTML = `部分量: ${part}<br><span style="font-size:22px; color:var(--primary)">整体量: ${whole}</span>`; document.getElementById('q-hint').innerText = `求现期比重(%)`; currentAnswer = (part / whole) * 100; currentTolerance = currentAnswer * 0.02; currentTrick = `比重 = 部分 ÷ 整体。算 ${part} ÷ ${whole}。分母截取前三位直除。`; }
+    function genAverage() { document.getElementById('q-text').className = "question-text"; let total = Math.floor(Math.random() * 50000) + 10000; let count = Math.floor(Math.random() * 90) + 10; document.getElementById('q-text').innerHTML = `总数: ${total}<br><span style="font-size:22px; color:var(--primary)">个数: ${count}</span>`; document.getElementById('q-hint').innerText = `求现期平均数`; currentAnswer = total / count; currentTolerance = currentAnswer * 0.02; currentTrick = `平均数 = 总数 ÷ 个数。分母截取前三位直除。`; }
+    function genWeightDiff() { document.getElementById('q-text').className = "question-text"; let P = Math.floor(Math.random()*40) + 20; let a = Math.floor(Math.random()*30) - 5; let b = Math.floor(Math.random()*30) - 5; if(a===b) b+=5; currentAnswer = Math.abs((P / 100) * (a - b) / (1 + a/100)); document.getElementById('q-text').innerHTML = `部分增速(a): ${a}%<br><span style="font-size:22px; color:var(--danger)">整体增速(b): ${b}%, 现期比重: ${P}%</span>`; document.getElementById('q-hint').innerText = `求比重差绝对值 (百分点)`; currentTolerance = 1.0; currentTrick = `高照口诀：1.判方向：a > b 上升。 2.判大小：结果必定 < |a - b| = ${Math.abs(a-b)}。选小于绝对差的最小项！`; }
+    function genCross() { document.getElementById('q-text').className = "question-text"; let r = Math.floor(Math.random()*10) + 10; let a = r + Math.floor(Math.random()*8) + 2; let b = r - Math.floor(Math.random()*8) - 2; currentAnswer = (r - b) / (a - r); document.getElementById('q-text').innerHTML = `部分A增速: ${a}%<br><span style="font-size:22px; color:var(--danger)">部分B: ${b}%, 整体: ${r}%</span>`; document.getElementById('q-hint').innerText = `求A与B的基期量比值 (小数)`; currentTolerance = 0.5; currentTrick = `高照十字交叉：距离之比等于基期量反比。A距离=${a-r}，B距离=${r-b}。A基/B基 = ${r-b} / ${a-r}。`; }
+
+    // --- 安全选项生成器 ---
     function generateChoiceOptions() {
         let setOptions = new Set(); let correctStr = formatVal(currentAnswer); setOptions.add(correctStr); choiceOptions = [currentAnswer];
         let maxAttempts = 50; 
@@ -514,14 +504,10 @@
             else if (currentRealModule === 'weightDiff') { let diff = Math.random() * 2 + 0.5; newVal = currentAnswer + (Math.random()>0.5?diff:-diff); if(newVal<0) newVal=Math.abs(newVal); }
             else if (currentRealModule === 'cross') { let diff = Math.random() * 0.8 + 0.2; newVal = currentAnswer + (Math.random()>0.5?diff:-diff); if(newVal<0.1) newVal=0.5; }
             else { let diff = 1 + (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.15 + 0.05); newVal = currentAnswer * diff; }
-            
-            let valStr = formatVal(newVal);
-            if(!setOptions.has(valStr)) { setOptions.add(valStr); choiceOptions.push(newVal); }
+            let valStr = formatVal(newVal); if(!setOptions.has(valStr)) { setOptions.add(valStr); choiceOptions.push(newVal); }
         }
         while(choiceOptions.length < 4) { let backupVal = currentAnswer * (1 + Math.random() * 0.5 + 0.3); choiceOptions.push(backupVal); } 
-        
-        choiceOptions.sort(() => 0.5 - Math.random());
-        correctChoiceIndex = choiceOptions.findIndex(v => v === currentAnswer);
+        choiceOptions.sort(() => 0.5 - Math.random()); correctChoiceIndex = choiceOptions.findIndex(v => v === currentAnswer);
         for(let i=0; i<4; i++) { let btn = document.getElementById('c-btn-'+i); btn.innerText = formatVal(choiceOptions[i]) + (currentRealModule === 'fractionTest' ? '%' : ''); }
     }
 
@@ -535,16 +521,18 @@
         answeredThisQ = true; logActivity(); 
         let timeSpent = (Date.now() - questionStartTime) / 1000; sessionTimes.push(timeSpent);
         let speedEval = getSpeedEval(timeSpent, currentRealModule);
+        
+        updateRadarStats(currentRealModule, isCorrect); // 更新雷达图数据
 
         const msgEl = document.getElementById('fb-msg'); const badgeEl = document.getElementById('time-badge');
         badgeEl.style.display = 'inline-block'; badgeEl.className = 'time-badge ' + speedEval.class; badgeEl.innerText = `⏱️ 用时 ${timeSpent.toFixed(1)}s [${speedEval.text}]`;
 
-        // 错题本引擎：做错 或 评分为C(超时) 自动入库
+        // 错题本逻辑
         if (!isCorrect || speedEval.grade === 'C') {
-            if(currentModule !== 'errorBook') { errorBook.push(currentQObj); localStorage.setItem('study_errors_v20', JSON.stringify(errorBook)); } 
-            else if (!isCorrect) { errorBook.push(errorBook.shift()); localStorage.setItem('study_errors_v20', JSON.stringify(errorBook)); }
+            if(currentModule !== 'errorBook') { errorBook.push(currentQObj); localStorage.setItem('study_errors_v21', JSON.stringify(errorBook)); } 
+            else if (!isCorrect) { errorBook.push(errorBook.shift()); localStorage.setItem('study_errors_v21', JSON.stringify(errorBook)); }
         } else if (isCorrect && currentModule === 'errorBook') {
-            errorBook.shift(); localStorage.setItem('study_errors_v20', JSON.stringify(errorBook));
+            errorBook.shift(); localStorage.setItem('study_errors_v21', JSON.stringify(errorBook));
         }
 
         if (isCorrect) {
@@ -552,7 +540,7 @@
             msgEl.innerText = inputMode === 'choice' ? "✅ 选择正确！" : (currentTolerance===0 ? "✅ 精确命中！" : `✅ 正确！(真值约 ${currentAnswer.toFixed(1)})`); msgEl.className = "feedback-msg correct"; setTimeout(nextQuestion, 800);
         } else {
             vibrate('error'); msgEl.innerText = currentTolerance===0 ? `❌ 错误。(正解是 ${currentAnswer})` : `❌ 错误。(真值约 ${currentAnswer.toFixed(1)})`; msgEl.className = "feedback-msg wrong";
-            document.getElementById('trick-box').innerHTML = `<strong>💡 高照解析：</strong><br>${currentTrick}`; document.getElementById('trick-box').style.display = 'block';
+            document.getElementById('trick-box').innerHTML = `<strong>💡 导师解析：</strong><br>${currentTrick}`; document.getElementById('trick-box').style.display = 'block';
             document.getElementById('btn-next').style.display = 'block'; document.getElementById('btn-next').focus();
         }
     }
@@ -561,11 +549,59 @@
     function nextQuestion() { if (currentQIndex >= totalQuestions) finishPractice(); else { currentQIndex++; loadQuestion(); } }
     function getLetterStyle(letter) { if(letter === 'S') return "grade-circle grade-s"; if(letter === 'A') return "grade-circle grade-a"; if(letter === 'B') return "grade-circle grade-b"; if(letter === 'C') return "grade-circle grade-c"; return "grade-circle grade-d"; }
 
+    // --- 雷达图绘制引擎 ---
+    function drawRadarChart() {
+        const canvas = document.getElementById('radarCanvas'); const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 220, 220);
+        
+        let labels = ['基础计算', '乘法估算', '除法截位', '分数互化', '核心公式', '定向找数'];
+        let keys = ['calc', 'mul', 'div', 'frac', 'formula', 'find'];
+        let values = keys.map(k => { let s = radarStats[k]; return s.t === 0 ? 60 : (s.c / s.t * 100); }); // 默认60分起步
+
+        let cx = 110, cy = 110, r = 70;
+        ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+        // 绘制五边形网格
+        for(let i=1; i<=5; i++) {
+            ctx.beginPath();
+            for(let j=0; j<6; j++) {
+                let angle = j * Math.PI / 3 - Math.PI / 2;
+                let x = cx + r * (i/5) * Math.cos(angle); let y = cy + r * (i/5) * Math.sin(angle);
+                if(j===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            }
+            ctx.closePath(); ctx.stroke();
+        }
+        // 绘制轴线与标签
+        ctx.fillStyle = '#666'; ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        for(let j=0; j<6; j++) {
+            let angle = j * Math.PI / 3 - Math.PI / 2;
+            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle)); ctx.stroke();
+            let lx = cx + (r+18) * Math.cos(angle); let ly = cy + (r+12) * Math.sin(angle);
+            ctx.fillText(labels[j], lx, ly);
+        }
+        // 绘制数据多边形
+        ctx.beginPath(); ctx.fillStyle = 'rgba(46, 125, 50, 0.3)'; ctx.strokeStyle = '#2e7d32'; ctx.lineWidth = 2;
+        for(let j=0; j<6; j++) {
+            let angle = j * Math.PI / 3 - Math.PI / 2; let valR = r * (values[j] / 100);
+            let x = cx + valR * Math.cos(angle); let y = cy + valR * Math.sin(angle);
+            if(j===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+
+        // 智能弱点诊断
+        let worstKey = keys[0], worstVal = values[0], worstLabel = labels[0];
+        for(let i=1; i<6; i++){ if(values[i] < worstVal && radarStats[keys[i]].t > 0) { worstVal = values[i]; worstKey = keys[i]; worstLabel = labels[i]; } }
+        const diagBox = document.getElementById('smart-diagnosis');
+        if(radarStats[worstKey].t > 0 && worstVal < 75) {
+            diagBox.innerHTML = `<strong>⚠️ 智能弱点诊断：</strong>系统检测到您的【${worstLabel}】准确率仅为 ${Math.round(worstVal)}%，已成为核心拉分点，建议立刻去首页进行专项突击！`;
+            diagBox.style.display = 'block';
+        } else { diagBox.style.display = 'none'; }
+    }
+
     // --- 综合报告生成 ---
     function finishPractice() {
         clearInterval(timerInterval); document.getElementById('practice-screen').style.display = 'none'; document.getElementById('result-screen').style.display = 'flex';
-        let mName = moduleNames[currentModule]; if(inputMode === 'choice') mName += ' [单选模考]'; else mName += ' [填空硬算]';
-        document.getElementById('r-module-name').innerText = `特训源：${mName} (${totalQuestions}题)`;
+        let mName = moduleNames[currentModule]; if(inputMode === 'choice') mName += ' [单选]'; else mName += ' [填空]';
+        document.getElementById('r-module-name').innerText = `报告源：${mName} (${totalQuestions}题)`;
         
         let accRate = totalQuestions === 0 ? 0 : (correctCount / totalQuestions) * 100;
         let accGrade = accRate === 100 ? 'S' : accRate >= 90 ? 'A' : accRate >= 80 ? 'B' : accRate >= 60 ? 'C' : 'D';
@@ -577,12 +613,15 @@
         const elAcc = document.getElementById('acc-grade'); elAcc.innerText = accGrade; elAcc.className = getLetterStyle(accGrade);
         const elSpd = document.getElementById('spd-grade'); elSpd.innerText = spdGrade; elSpd.className = getLetterStyle(spdGrade);
 
+        // 绘制雷达图
+        drawRadarChart();
+
         let comment = "";
-        if(errorBook.length > 0) document.getElementById('r-error-notice').innerText = `⚠️ 慢速/错误题目已被收录至【错题本重练】，请定期清洗！`; else document.getElementById('r-error-notice').innerText = '';
+        if(errorBook.length > 0) document.getElementById('r-error-notice').innerText = `⚠️ 慢速/错误题目已被系统捕获至【错题本重练】，请定期清洗！`; else document.getElementById('r-error-notice').innerText = '';
         if (accGrade === 'S' && spdGrade === 'S') comment = "🏆 考神附体！准确率和估算速度双双拉满，高照老师看了都说好！";
         else if (accRate < 60) comment = "📉 准确率堪忧。退回首页去【知识背诵卡片】区，把高照的八大公式理清再来。";
         else if ((accGrade === 'S' || accGrade === 'A') && (spdGrade === 'C' || spdGrade === 'D')) comment = "🐢 算得很准，但速度拖后腿。资料分析不要做实验，考场上必须敢于截位直除，抓大放小！";
-        else comment = "⚖️ 成绩稳健。记得去主页点击红色的【错题本】，把你超时和算错的题目练到肌肉记忆。";
+        else comment = "⚖️ 成绩稳健。请结合雷达图的弱点诊断进行定向攻克。";
         document.getElementById('r-commentary').innerText = `导师评价：${comment}`;
     }
 

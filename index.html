@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>行测速算小助手</title>
+    <title>行测速算特训营 V7</title>
     <style>
         :root {
             --bg-color: #e8f5e9; --card-bg: #ffffff; --primary: #2e7d32; --primary-light: #c8e6c9;   
@@ -11,6 +11,8 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        input, textarea { user-select: auto; -webkit-user-select: auto; }
+        
         body { background-color: var(--bg-color); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center;}
         
         .app-container { width: 100%; max-width: 500px; background: var(--bg-color); min-height: 100vh; display: flex; flex-direction: column; position: relative;}
@@ -23,12 +25,14 @@
         .heatmap-cell { flex: 1; aspect-ratio: 1; background: #ebedf0; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent; transition: 0.3s;}
         .heatmap-cell.level-1 { background: #c6e48b; } .heatmap-cell.level-2 { background: #7bc96f; } .heatmap-cell.level-3 { background: #239a3b; color: white; font-weight: bold;} .heatmap-cell.level-4 { background: #196127; color: white; font-weight: bold;}
 
-        #home-screen { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; }
+        #home-screen { padding: 0 15px 15px; display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; }
         #home-screen::-webkit-scrollbar { display: none; }
         
-        .section-title { font-weight: bold; font-size: 13px; color: var(--text-sub); margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+        .section-title { font-weight: bold; font-size: 13px; color: var(--text-sub); margin-top: 5px; display: flex; align-items: center; gap: 5px; padding-left: 2px;}
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .module-btn { background: var(--primary-light); color: var(--primary); border: 2px solid transparent; border-radius: 8px; padding: 12px 2px; text-align: center; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;}
+        
+        /* 模块按钮统一风格 */
+        .module-btn { background: var(--primary-light); color: var(--primary); border: 2px solid transparent; border-radius: 8px; padding: 12px 2px; text-align: center; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;}
         .module-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3); transform: translateY(-2px); }
         .module-btn span.sub { font-size: 10px; opacity: 0.8; margin-top: 4px; font-weight: normal; }
         .badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
@@ -43,7 +47,6 @@
         #memorize-screen { display: none; flex-direction: column; height: 100vh; background: var(--card-bg); }
         .mem-header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: bold; font-size: 16px; color: var(--primary); }
         .mem-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; perspective: 1000px; }
-        
         .flashcard { width: 100%; max-width: 320px; height: 400px; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 20px; }
         .flashcard.is-flipped { transform: rotateY(180deg); }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
@@ -54,7 +57,6 @@
         .card-formula { font-size: 32px; font-weight: 900; color: var(--primary); margin-bottom: 20px; line-height: 1.4; }
         .card-note { font-size: 14px; color: var(--text-sub); background: #f1f8e9; padding: 10px; border-radius: 8px; }
         .flip-hint { position: absolute; bottom: 20px; font-size: 12px; opacity: 0.7; }
-        
         .mem-controls { display: flex; gap: 15px; width: 100%; max-width: 320px; padding: 20px 0 40px; }
         .mem-btn { flex: 1; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; border: none; cursor: pointer; background: #f0f0f0; color: var(--text-main); }
         .mem-btn.primary { background: var(--primary); color: white; }
@@ -66,7 +68,7 @@
         
         .prac-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto;}
         .question-type { font-size: 13px; color: var(--success); background: #e8f5e9; padding: 4px 12px; border-radius: 20px; margin-bottom: 15px; font-weight: bold;}
-        .question-text { font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center; line-height: 1.3;}
+        .question-text { font-size: 36px; font-weight: 900; margin-bottom: 5px; text-align: center; line-height: 1.3;}
         .question-hint { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; text-align: center;}
         
         .input-area { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 15px; }
@@ -113,62 +115,52 @@
     
     <div id="home-screen">
         <div class="header">
-            <span>行测速算核武版 V6</span>
+            <span>行测资料分析特训 V7</span>
         </div>
 
         <div class="heatmap-container">
-            <div class="heatmap-title"><span>🔥 近7日特训记录</span><span id="total-done-text">总计: 0题</span></div>
+            <div class="heatmap-title"><span>🔥 每日特训打卡</span><span id="total-done-text">总计: 0题</span></div>
             <div class="heatmap-grid" id="heatmap"></div>
         </div>
 
-        <div class="section-title">📚 知识背诵专区 (提分基石)</div>
+        <div class="section-title">🎯 实战突击</div>
         <div class="grid-container" style="grid-template-columns: repeat(2, 1fr);">
-            <div class="module-btn" style="background:#e3f2fd; color:#1565c0; border-color:#1565c0;" onclick="startMemorize('formula')">公式大全<span class="sub">资料分析核心</span></div>
-            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a; border-color:#6a1b9a;" onclick="startMemorize('fraction')">分数互化<span class="sub">百分数秒转</span></div>
-        </div>
-
-        <div class="section-title">🎯 考场突击与纠错</div>
-        <div class="grid-container">
-            <div class="module-btn active" style="background:#fff3e0; color:#e65100; border-color:#e65100;" onclick="selectModule('mixed', this)">全真突击<span class="sub">全题型随机</span></div>
+            <div class="module-btn active" style="background:#fff3e0; color:#e65100; border-color:#e65100;" onclick="selectModule('mixed', this)">全真随机突击<span class="sub">全题型混合</span></div>
             <div class="module-btn" style="background:#ffeaeb; color:#d32f2f;" onclick="selectModule('errorBook', this)">
-                错题重练<span class="sub">攻克弱点</span>
+                错题本重练<span class="sub">攻克弱点</span>
                 <div class="badge" id="error-badge" style="display:none;">0</div>
             </div>
-            <div class="module-btn" style="background:#e0f2f1; color:#2e7d32;" onclick="selectModule('fractionTest', this)">互化测试<span class="sub">肌肉记忆</span></div>
         </div>
 
-        <div class="section-title">📊 资料分析模块细分</div>
+        <div class="section-title">⚡ 基础算力强化 (新增)</div>
         <div class="grid-container">
-            <div class="module-btn" onclick="selectModule('growth', this)">增长量<span class="sub">N+1 法则</span></div>
-            <div class="module-btn" onclick="selectModule('base', this)">基期量<span class="sub">化除为乘</span></div>
+            <div class="module-btn" onclick="selectModule('make100', this)">凑整练习<span class="sub">加法基石</span></div>
+            <div class="module-btn" onclick="selectModule('multiAdd', this)">多数连加<span class="sub">求总计必备</span></div>
+            <div class="module-btn" onclick="selectModule('specialMul', this)">特殊乘法<span class="sub">×11 / ×15</span></div>
+        </div>
+
+        <div class="section-title">📊 资料分析核心技巧</div>
+        <div class="grid-container">
+            <div class="module-btn" style="background:#e3f2fd; color:#1565c0;" onclick="selectModule('fractionTest', this)">百化分实战<span class="sub">百分数转分数</span></div>
+            <div class="module-btn" onclick="selectModule('growth', this)">增长量计算<span class="sub">N+1 法则</span></div>
+            <div class="module-btn" onclick="selectModule('base', this)">基期量估算<span class="sub">化除为乘</span></div>
             <div class="module-btn" onclick="selectModule('weight', this)">比重计算<span class="sub">部分÷整体</span></div>
-            <div class="module-btn" onclick="selectModule('average', this)">平均数<span class="sub">总数÷个数</span></div>
-            <div class="module-btn" onclick="selectModule('customDiv', this)">除法截位<span class="sub">自定义</span></div>
-            <div class="module-btn" onclick="selectModule('customMul', this)">乘法估算<span class="sub">自定义</span></div>
+            <div class="module-btn" onclick="selectModule('average', this)">平均数计算<span class="sub">总数÷个数</span></div>
+            <div class="module-btn" onclick="selectModule('div5', this)">除法截位<span class="sub">五位除三位</span></div>
+            <div class="module-btn" onclick="selectModule('mulEst', this)">乘法估算<span class="sub">一进一舍</span></div>
         </div>
 
-        <div class="settings-row" id="custom-div-settings" style="display:none; background:#e8f5e9;">
-            <span>除法参数</span>
-            <div>
-                <select class="setting-select" id="div-n1"><option value="4">4位数</option><option value="5" selected>5位数</option><option value="6">6位数</option></select>
-                ÷
-                <select class="setting-select" id="div-n2"><option value="2">2位数</option><option value="3" selected>3位数</option><option value="4">4位数</option></select>
-            </div>
-        </div>
-        <div class="settings-row" id="custom-mul-settings" style="display:none; background:#e8f5e9;">
-            <span>乘法参数</span>
-            <div>
-                <select class="setting-select" id="mul-n1"><option value="2">2位数</option><option value="3" selected>3位数</option><option value="4">4位数</option></select>
-                ×
-                <select class="setting-select" id="mul-n2"><option value="2" selected>2位数</option><option value="3">3位数</option><option value="4">4位数</option></select>
-            </div>
+        <div class="section-title">📚 知识背诵卡片</div>
+        <div class="grid-container" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a;" onclick="startMemorize('formula')">公式大全卡片<span class="sub">考前必看</span></div>
+            <div class="module-btn" style="background:#f3e5f5; color:#6a1b9a;" onclick="startMemorize('fraction')">分数互化卡片<span class="sub">肌肉记忆</span></div>
         </div>
 
-        <div class="settings-row">
+        <div class="settings-row" style="margin-top: 15px;">
             <span>答题模式</span>
             <select class="setting-select" id="input-mode">
-                <option value="choice" selected>单选题 (推荐)</option>
-                <option value="input">填空题 (硬核)</option>
+                <option value="choice" selected>单选题 (推荐防真)</option>
+                <option value="input">填空题 (硬核心算)</option>
             </select>
         </div>
         <div class="settings-row">
@@ -180,25 +172,25 @@
             </select>
         </div>
 
-        <button class="start-btn" onclick="startPractice()">启动特训</button>
+        <button class="start-btn" onclick="startPractice()">开始特训</button>
     </div>
 
     <div id="memorize-screen">
         <div class="mem-header">
             <span onclick="exitMemorize()" style="cursor:pointer; color:var(--text-sub);">返回</span>
-            <span id="mem-title">核心公式背诵</span>
+            <span id="mem-title">知识卡片</span>
             <span style="font-size:12px; color:var(--primary);" id="mem-progress">1/10</span>
         </div>
         <div class="mem-content">
             <div class="flashcard" id="flashcard" onclick="flipCard()">
                 <div class="card-face card-front">
-                    <div class="card-title" id="card-front-title">基期量公式</div>
-                    <div class="card-desc" id="card-front-desc">已知现期量和增长率</div>
-                    <div class="flip-hint">点击卡片翻转答案</div>
+                    <div class="card-title" id="card-front-title"></div>
+                    <div class="card-desc" id="card-front-desc"></div>
+                    <div class="flip-hint">点击卡片翻转查看答案</div>
                 </div>
                 <div class="card-face card-back">
-                    <div class="card-formula" id="card-back-formula">现期量 ÷ (1+r)</div>
-                    <div class="card-note" id="card-back-note">提示：遇到下降，则是 现期量 ÷ (1-r)</div>
+                    <div class="card-formula" id="card-back-formula"></div>
+                    <div class="card-note" id="card-back-note"></div>
                 </div>
             </div>
         </div>
@@ -222,7 +214,7 @@
             
             <div class="input-area" id="area-input">
                 <input type="number" id="ans-input" class="answer-input" placeholder="?" inputmode="decimal" autocomplete="off">
-                <button class="submit-btn" id="btn-submit" onclick="checkAnswerInput()">验证</button>
+                <button class="submit-btn" id="btn-submit" onclick="checkAnswerInput()">验证答案</button>
             </div>
 
             <div class="choice-area" id="area-choice">
@@ -254,12 +246,12 @@
 
             <div class="stat-grid">
                 <div class="stat-box"><div class="stat-val"><span id="r-score" style="color:var(--success);">80</span>%</div><div class="stat-name">正确率</div></div>
-                <div class="stat-box"><div class="stat-val"><span id="r-avg-time" style="color:var(--primary);">3.5</span>s</div><div class="stat-name">单题耗时</div></div>
+                <div class="stat-box"><div class="stat-val"><span id="r-avg-time" style="color:var(--primary);">3.5</span>s</div><div class="stat-name">单题平均耗时</div></div>
             </div>
             
             <div style="font-size: 12px; color: var(--danger); font-weight: bold; margin-bottom: 15px;" id="r-error-notice"></div>
             <div class="commentary-box" id="r-commentary"></div>
-            <button class="r-btn" onclick="backToHome()">返回主城</button>
+            <button class="r-btn" onclick="backToHome()">返回主页</button>
         </div>
     </div>
 
@@ -273,36 +265,42 @@
         if (type === 'error') navigator.vibrate([200]);  
     }
 
-    // --- 数据与状态 ---
-    let activityLog = JSON.parse(localStorage.getItem('v6Activity')) || {};
-    let errorBook = JSON.parse(localStorage.getItem('v6Errors')) || [];
+    // --- 数据 ---
+    let activityLog = JSON.parse(localStorage.getItem('v7Activity')) || {};
+    let errorBook = JSON.parse(localStorage.getItem('v7Errors')) || [];
 
     const fractions = [
         { f: '1/2', v: 50.0 }, { f: '1/3', v: 33.3 }, { f: '1/4', v: 25.0 }, { f: '1/5', v: 20.0 },
         { f: '1/6', v: 16.7 }, { f: '1/7', v: 14.3 }, { f: '1/8', v: 12.5 }, { f: '1/9', v: 11.1 },
-        { f: '1/11', v: 9.1 }, { f: '1/12', v: 8.3 }, { f: '1/13', v: 7.7 }, { f: '1/14', v: 7.1 }, { f: '1/15', v: 6.7 }, { f: '1/16', v: 6.3 },
-        { f: '1/17', v: 5.9 }, { f: '1/18', v: 5.6 }, { f: '1/19', v: 5.3 }, { f: '1/20', v: 5.0 }
+        { f: '1/11', v: 9.1 }, { f: '1/12', v: 8.3 }, { f: '1/13', v: 7.7 }, { f: '1/14', v: 7.1 }, 
+        { f: '1/15', v: 6.7 }, { f: '1/16', v: 6.3 }, { f: '1/17', v: 5.9 }, { f: '1/18', v: 5.6 }, 
+        { f: '1/19', v: 5.3 }, { f: '1/20', v: 5.0 }
     ];
 
     const formulas = [
         { title: "基期量", desc: "已知现期和增长率", formula: "现期 ÷ (1+r)", note: "截位直除，分母保留三位" },
         { title: "增长量", desc: "已知现期和增长率", formula: "现期 ÷ (n+1)", note: "将 r 化为 1/n，增加用 n+1，减少用 n-1" },
         { title: "现期比重", desc: "求部分占整体的比例", formula: "部分 ÷ 整体", note: "截位直除" },
-        { title: "基期比重", desc: "求去年的比重", formula: "现期比重 × [(1+整体r) ÷ (1+部分r)]", note: "看 整体r 和 部分r 的大小关系定增减" },
-        { title: "比重差", desc: "现期比重 - 基期比重", formula: "现期比重 × [(部分r - 整体r) ÷ (1+部分r)]", note: "先看 (部分r - 整体r) 的正负定方向，再看数值一定小于绝对差值" },
+        { title: "基期比重", desc: "求去年的比重", formula: "现期比重 × [(1+整体r) ÷ (1+部分r)]", note: "看整体r和部分r的大小定增减" },
+        { title: "比重差", desc: "现期比重 - 基期比重", formula: "现期比重 × [(部分r - 整体r) ÷ (1+部分r)]", note: "结果一定小于 |部分r - 整体r|" },
         { title: "现期平均数", desc: "求平均", formula: "总数 ÷ 个数", note: "注意单位换算" },
         { title: "平均数增长率", desc: "求平均数的增速", formula: "(总数r - 个数r) ÷ (1+个数r)", note: "与比重差公式结构类似" }
     ];
 
     const moduleNames = { 
-        'fractionTest': '分数互化', 'customDiv': '除法截位', 'customMul': '乘法估算', 
-        'growth': '增长量计算', 'base': '基期估算', 'weight': '比重计算', 'average': '平均数',
+        'fractionTest': '百化分速算', 'div5': '五位除三位', 'mulEst': '乘法估算', 
+        'growth': '增长量计算', 'base': '基期估算', 'weight': '比重计算', 'average': '平均数计算',
+        'make100': '凑整练习', 'multiAdd': '多数连加', 'specialMul': '特殊乘法',
         'mixed': '全真突击', 'errorBook': '错题重练' 
     };
-    const dataModules = ['fractionTest', 'growth', 'base', 'customDiv', 'customMul', 'weight', 'average']; 
+    
+    // 全真突击的题库池
+    const dataModules = ['fractionTest', 'growth', 'base', 'div5', 'mulEst', 'weight', 'average', 'make100', 'multiAdd', 'specialMul']; 
 
+    // 各题型的时间阈值 [极佳, 优秀, 合格]
     const TIME_THRESHOLDS = {
-        'fractionTest': [2, 4, 6], 'customDiv': [10, 15, 25], 'customMul': [8, 15, 20], 
+        'fractionTest': [2, 4, 6], 'make100': [3, 5, 8], 'specialMul': [5, 8, 12],
+        'multiAdd': [10, 15, 20], 'div5': [10, 15, 25], 'mulEst': [8, 15, 20], 
         'growth': [10, 18, 25], 'base': [10, 18, 25], 'weight': [10, 18, 25], 'average': [10, 18, 25]
     };
 
@@ -356,7 +354,7 @@
     function logActivity() {
         let dateStr = new Date().toISOString().split('T')[0];
         activityLog[dateStr] = (activityLog[dateStr] || 0) + 1;
-        localStorage.setItem('v6Activity', JSON.stringify(activityLog));
+        localStorage.setItem('v7Activity', JSON.stringify(activityLog));
     }
 
     // --- 界面控制 ---
@@ -364,24 +362,17 @@
         currentModule = mod;
         document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
         btnEl.classList.add('active');
-        
-        document.getElementById('custom-div-settings').style.display = (mod === 'customDiv') ? 'flex' : 'none';
-        document.getElementById('custom-mul-settings').style.display = (mod === 'customMul') ? 'flex' : 'none';
     }
 
     // --- 背诵模块 ---
-    let memType = '';
-    let memIndex = 0;
-    let memList = [];
+    let memType = ''; let memIndex = 0; let memList = [];
     
     function startMemorize(type) {
         memType = type; memIndex = 0;
         memList = type === 'formula' ? formulas : fractions;
-        
         document.getElementById('home-screen').style.display = 'none';
         document.getElementById('memorize-screen').style.display = 'flex';
-        document.getElementById('mem-title').innerText = type === 'formula' ? "核心公式背诵" : "分数互化背诵";
-        
+        document.getElementById('mem-title').innerText = type === 'formula' ? "核心公式卡片" : "分数互化卡片";
         loadCard();
     }
     function loadCard() {
@@ -398,15 +389,12 @@
             document.getElementById('card-front-title').innerText = item.f;
             document.getElementById('card-front-desc').innerText = "是多少 %？";
             document.getElementById('card-back-formula').innerText = item.v + "%";
-            document.getElementById('card-back-note').innerText = `常用于近似计算：比如增长率 ${item.v}% 可以看作 ${item.f}`;
+            document.getElementById('card-back-note').innerText = `常考近似：比如增长率 ${item.v}% 可以看作 ${item.f}`;
         }
     }
     function flipCard() { document.getElementById('flashcard').classList.toggle('is-flipped'); vibrate('success'); }
     function prevCard() { if(memIndex > 0) { memIndex--; loadCard(); } }
-    function nextCard() { 
-        if(memIndex < memList.length - 1) { memIndex++; loadCard(); } 
-        else { alert("已完成背诵！"); exitMemorize(); }
-    }
+    function nextCard() { if(memIndex < memList.length - 1) { memIndex++; loadCard(); } else { alert("已完成一组背诵！"); exitMemorize(); } }
     function exitMemorize() { document.getElementById('memorize-screen').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; }
 
     // --- 练习启动 ---
@@ -472,9 +460,13 @@
         } else {
             currentRealModule = currentModule === 'mixed' ? dataModules[Math.floor(Math.random() * dataModules.length)] : currentModule;
             
+            // 路由到各种生成器
             if (currentRealModule === 'fractionTest') genFractionTest();
-            else if (currentRealModule === 'customDiv') genCustomDiv();
-            else if (currentRealModule === 'customMul') genCustomMul();
+            else if (currentRealModule === 'make100') genMake100();
+            else if (currentRealModule === 'multiAdd') genMultiAdd();
+            else if (currentRealModule === 'specialMul') genSpecialMul();
+            else if (currentRealModule === 'div5') genDiv5();
+            else if (currentRealModule === 'mulEst') genMulEst();
             else if (currentRealModule === 'growth') genGrowth();
             else if (currentRealModule === 'base') genBase();
             else if (currentRealModule === 'weight') genWeight();
@@ -488,39 +480,71 @@
         questionStartTime = Date.now();
     }
 
+    // 新增：凑整百练习
+    function genMake100() {
+        let target = Math.random() > 0.5 ? 100 : 1000;
+        let a = Math.floor(Math.random() * (target - 11)) + 11;
+        currentAnswer = target - a;
+        currentTolerance = 0; // 必须精确
+        document.getElementById('q-text').innerHTML = `${a} + ? = ${target}`;
+        document.getElementById('q-hint').innerText = "精确计算互补数";
+        currentTrick = `凑整法：从高位到低位，高位凑 9，个位凑 10。`;
+    }
+
+    // 新增：多数连加
+    function genMultiAdd() {
+        let nums = [];
+        let sum = 0;
+        for(let i=0; i<4; i++) {
+            let n = Math.floor(Math.random() * 90) + 10;
+            nums.push(n); sum += n;
+        }
+        currentAnswer = sum;
+        currentTolerance = 0;
+        document.getElementById('q-text').innerHTML = nums.join(' + ') + ' = ?';
+        document.getElementById('q-hint').innerText = "精确连加";
+        currentTrick = `连加技巧：先找能“凑整”的尾数对相加，最后再加零碎的数字。`;
+    }
+
+    // 新增：特殊乘法 (x11, x15, x5)
+    function genSpecialMul() {
+        let types = [5, 11, 15];
+        let m = types[Math.floor(Math.random() * 3)];
+        let a = Math.floor(Math.random() * 90) + 10;
+        currentAnswer = a * m;
+        currentTolerance = 0;
+        document.getElementById('q-text').innerHTML = `${a} × ${m} = ?`;
+        document.getElementById('q-hint').innerText = "速算技巧精确求解";
+        
+        if(m === 5) currentTrick = `乘 5 技巧：折半加零。${a} ÷ 2 = ${a/2}，再乘以 10 即可。`;
+        else if(m === 11) currentTrick = `乘 11 技巧：两头一拉，中间相加。`;
+        else if(m === 15) currentTrick = `乘 15 技巧：本数加半数，再乘以 10。${a} + ${a/2} = ${a*1.5}。`;
+    }
+
+    // 原有模块
     function genFractionTest() {
         let item = fractions[Math.floor(Math.random() * fractions.length)];
         document.getElementById('q-text').innerHTML = `${item.f} = ? %`;
-        document.getElementById('q-hint').innerText = "必须肌肉记忆的百分数";
+        document.getElementById('q-hint').innerText = "允许误差 ±0.2";
         currentAnswer = item.v; currentTolerance = 0.2;
-        currentTrick = `纯记忆：${item.f} ≈ ${item.v}%。`;
+        currentTrick = `肌肉记忆：${item.f} ≈ ${item.v}%。`;
     }
 
-    function genCustomDiv() {
-        let n1 = parseInt(document.getElementById('div-n1').value);
-        let n2 = parseInt(document.getElementById('div-n2').value);
-        let max1 = Math.pow(10, n1) - 1; let min1 = Math.pow(10, n1-1);
-        let max2 = Math.pow(10, n2) - 1; let min2 = Math.pow(10, n2-1);
-        let a = Math.floor(Math.random() * (max1 - min1 + 1)) + min1;
-        let b = Math.floor(Math.random() * (max2 - min2 + 1)) + min2;
-        
+    function genDiv5() {
+        let a = Math.floor(Math.random() * 90000) + 10000; let b = Math.floor(Math.random() * 900) + 100;
         currentAnswer = a / b; currentTolerance = currentAnswer * 0.015; 
         document.getElementById('q-text').innerHTML = `${a} ÷ ${b} = ?`;
-        document.getElementById('q-hint').innerText = `截位直除 (${n1}位÷${n2}位)`;
-        let roundB = Math.round(b / Math.pow(10, n2-3)) * Math.pow(10, n2-3); // 截取前三位
-        currentTrick = `分母保留前三位有效数字，把 ${b} 看作 ${roundB} 进行估算。`;
+        document.getElementById('q-hint').innerText = "截位直除，误差 ±1.5%";
+        let roundB = Math.round(b/10)*10;
+        currentTrick = `分母保留前两位，把 ${b} 看作 ${roundB}，算 ${a} ÷ ${roundB}。`;
     }
 
-    function genCustomMul() {
-        let n1 = parseInt(document.getElementById('mul-n1').value);
-        let n2 = parseInt(document.getElementById('mul-n2').value);
-        let a = Math.floor(Math.random() * (Math.pow(10, n1) - Math.pow(10, n1-1))) + Math.pow(10, n1-1);
-        let b = Math.floor(Math.random() * (Math.pow(10, n2) - Math.pow(10, n2-1))) + Math.pow(10, n2-1);
-        
+    function genMulEst() {
+        let a = Math.floor(Math.random() * 900) + 100; let b = Math.floor(Math.random() * 90) + 10;
         currentAnswer = a * b; currentTolerance = currentAnswer * 0.03; 
         document.getElementById('q-text').innerHTML = `${a} × ${b} = ?`;
-        document.getElementById('q-hint').innerText = `乘法估算 (${n1}位×${n2}位)`;
-        currentTrick = `一进一舍保持平衡，看选项差距截位。`;
+        document.getElementById('q-hint').innerText = "乘法估算，误差 ±3%";
+        currentTrick = `一进一舍保持平衡，根据选项差距大胆截位。`;
     }
 
     function genGrowth() {
@@ -541,7 +565,7 @@
         document.getElementById('q-hint').innerText = `求基期量`;
         let r = isInc ? (1 + rate/100) : (1 - rate/100);
         currentAnswer = val / r; currentTolerance = currentAnswer * 0.02;
-        currentTrick = `基期 = 现期 / (1±r)。即算 ${val} ÷ ${r.toFixed(2)}`;
+        currentTrick = `公式：现期 / (1±r)。结合截位估算 ${val} ÷ ${r.toFixed(2)}。`;
     }
 
     function genWeight() {
@@ -562,22 +586,30 @@
         currentTrick = `平均数 = 总数 / 个数。直接算 ${total} ÷ ${count}。`;
     }
 
-    // --- 去重干扰项生成器 ---
+    // --- 极强防重的选择题生成器 ---
     function generateChoiceOptions() {
         let setOptions = new Set();
         let correctStr = formatVal(currentAnswer);
         setOptions.add(correctStr);
         choiceOptions = [currentAnswer];
         
-        let maxAttempts = 20;
+        let maxAttempts = 50; // 防止死循环
         while(choiceOptions.length < 4 && maxAttempts > 0) {
             maxAttempts--;
             let newVal;
-            if (currentRealModule === 'fractionTest') {
+            
+            // 如果是绝对精确的题目，生成干扰项也要精确
+            if (currentTolerance === 0) {
+                // 加减乘的干扰项通常是尾数错、进位错
+                let offset = Math.floor(Math.random() * 20) - 10;
+                if(offset === 0) offset = 10;
+                newVal = currentAnswer + offset;
+            } else if (currentRealModule === 'fractionTest') {
                 let others = fractions.map(f => f.v).filter(v => Math.abs(v - currentAnswer) > 0.5);
                 newVal = others[Math.floor(Math.random() * others.length)];
             } else {
-                let diff = 1 + (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.15 + 0.05); // 偏离 5% 到 20%
+                // 估算题，生成 5% 到 20% 的偏差
+                let diff = 1 + (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.15 + 0.05); 
                 newVal = currentAnswer * diff;
             }
             
@@ -588,6 +620,12 @@
             }
         }
         
+        // 如果依然没填满（极少数情况），强制注入安全值
+        while(choiceOptions.length < 4) {
+            let backupVal = currentAnswer * (1 + Math.random() * 0.5 + 0.3);
+            choiceOptions.push(backupVal);
+        }
+
         choiceOptions.sort(() => 0.5 - Math.random());
         correctChoiceIndex = choiceOptions.findIndex(v => v === currentAnswer);
 
@@ -599,17 +637,18 @@
 
     function formatVal(val) {
         if(currentRealModule === 'fractionTest') return val.toFixed(1);
+        if(currentTolerance === 0) return val.toString(); // 基础运算必须是整数展示
         if(val > 100) return Math.round(val).toString();
         return val.toFixed(1);
     }
 
-    // --- 验证与结果 ---
+    // --- 验证与结果处理 ---
     function checkAnswerInput() {
         let userVal = parseFloat(document.getElementById('ans-input').value);
         if (isNaN(userVal)) { alert("请输入数字！"); return; }
         document.getElementById('ans-input').disabled = true; document.getElementById('btn-submit').style.display = 'none';
         
-        let isCorrect = Math.abs(userVal - currentAnswer) <= currentTolerance;
+        let isCorrect = currentTolerance === 0 ? (userVal === currentAnswer) : (Math.abs(userVal - currentAnswer) <= currentTolerance);
         processResult(isCorrect);
     }
 
@@ -637,22 +676,22 @@
         badgeEl.style.display = 'inline-block'; badgeEl.className = 'time-badge ' + speedEval.class; badgeEl.innerText = `⏱️ 用时 ${timeSpent.toFixed(1)}s [${speedEval.text}]`;
 
         if (!isCorrect || speedEval.grade === 'C') {
-            if(currentModule !== 'errorBook') { errorBook.push(currentQObj); localStorage.setItem('v6Errors', JSON.stringify(errorBook)); } 
-            else if (!isCorrect) { errorBook.push(errorBook.shift()); localStorage.setItem('v6Errors', JSON.stringify(errorBook)); }
+            if(currentModule !== 'errorBook') { errorBook.push(currentQObj); localStorage.setItem('v7Errors', JSON.stringify(errorBook)); } 
+            else if (!isCorrect) { errorBook.push(errorBook.shift()); localStorage.setItem('v7Errors', JSON.stringify(errorBook)); }
         } else if (isCorrect && currentModule === 'errorBook') {
-            errorBook.shift(); localStorage.setItem('v6Errors', JSON.stringify(errorBook));
+            errorBook.shift(); localStorage.setItem('v7Errors', JSON.stringify(errorBook));
         }
 
         if (isCorrect) {
             correctCount++; vibrate('success');
-            msgEl.innerText = inputMode === 'choice' ? "✅ 选择正确！" : `✅ 正确！(真值约 ${currentAnswer.toFixed(1)})`;
+            msgEl.innerText = inputMode === 'choice' ? "✅ 选择正确！" : (currentTolerance===0 ? "✅ 精确命中！" : `✅ 正确！(真值约 ${currentAnswer.toFixed(1)})`);
             msgEl.className = "feedback-msg correct";
             setTimeout(nextQuestion, 800);
         } else {
             vibrate('error');
-            msgEl.innerText = `❌ 错误。(真值约 ${currentAnswer.toFixed(1)})`;
+            msgEl.innerText = currentTolerance===0 ? `❌ 错误。(正解是 ${currentAnswer})` : `❌ 错误。(真值约 ${currentAnswer.toFixed(1)})`;
             msgEl.className = "feedback-msg wrong";
-            document.getElementById('trick-box').innerHTML = `<strong>💡 导师解析：</strong><br>${currentTrick}`;
+            document.getElementById('trick-box').innerHTML = `<strong>💡 速算解析：</strong><br>${currentTrick}`;
             document.getElementById('trick-box').style.display = 'block';
             document.getElementById('btn-next').style.display = 'block'; document.getElementById('btn-next').focus();
         }
@@ -681,7 +720,7 @@
         document.getElementById('result-screen').style.display = 'flex';
         
         let mName = moduleNames[currentModule];
-        if(inputMode === 'choice') mName += ' [选择题]';
+        if(inputMode === 'choice') mName += ' [单选]'; else mName += ' [填空]';
         document.getElementById('r-module-name').innerText = `特训：${mName} (${totalQuestions}题)`;
         
         let accRate = totalQuestions === 0 ? 0 : (correctCount / totalQuestions) * 100;
@@ -697,13 +736,13 @@
         const elSpd = document.getElementById('spd-grade'); elSpd.innerText = spdGrade; elSpd.className = getLetterStyle(spdGrade);
 
         let comment = "";
-        if(errorBook.length > 0) document.getElementById('r-error-notice').innerText = `⚠️ 已将本次拉胯题目收录至【错题本】，请记得复训！`;
+        if(errorBook.length > 0) document.getElementById('r-error-notice').innerText = `⚠️ 慢速/错误题目已入库【错题本】，请定期清理！`;
         else document.getElementById('r-error-notice').innerText = '';
 
-        if (accGrade === 'S' && spdGrade === 'S') comment = "🏆 考神附体！准确率和速度双双拉满，满分表现！";
-        else if (accRate < 60) comment = "📉 准确率堪忧。不要盲目追求速度，先去【知识背诵区】巩固公式。";
-        else if ((accGrade === 'S' || accGrade === 'A') && (spdGrade === 'C' || spdGrade === 'D')) comment = "🐢 算得很准，但耗时太长。考场上时间就是命，大胆用截位估算！";
-        else comment = "⚖️ 成绩中规中矩。记得多去首页刷一下【错题本】，攻克你的弱点。";
+        if (accGrade === 'S' && spdGrade === 'S') comment = "🏆 算神附体！准确率和速度双双拉满，满分表现！";
+        else if (accRate < 60) comment = "📉 准确率堪忧。停下来去【知识卡片】里把口诀和公式重新背一遍！";
+        else if ((accGrade === 'S' || accGrade === 'A') && (spdGrade === 'C' || spdGrade === 'D')) comment = "🐢 算得很准，但速度拖后腿了。大胆运用截位估算法，不要精算！";
+        else comment = "⚖️ 成绩及格。去首页刷一下红色的【错题本】，把被评为C级的题练上去！";
         
         document.getElementById('r-commentary').innerText = `导师评价：${comment}`;
     }
